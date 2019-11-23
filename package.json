@@ -1,0 +1,26 @@
+{
+  "name": "se3316-cdevito2-lab5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cdevito2/se3316-cdevito2-lab5.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cdevito2/se3316-cdevito2-lab5/issues"
+  },
+  "homepage": "https://github.com/cdevito2/se3316-cdevito2-lab5#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.7.12",
+    "nodemon": "^2.0.1"
+  }
+}

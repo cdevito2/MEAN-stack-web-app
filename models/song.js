@@ -33,6 +33,11 @@ var SongSchema = new Schema({
     genre:{
         type:String,
         requierd:true
+    },
+    copyrightValidation:{
+        type:Boolean,
+        required:true,
+        default:false
     }
 
 });

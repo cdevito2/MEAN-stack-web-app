@@ -33,6 +33,7 @@ router.get('/open/songs',function(req,res,next){
     }).limit(10);
 });
 router.get("/open/search/{x}", function(req,res) {
+    json.parse(x);
     
 });
 router.get("/open/reviews/:name", function(req,res,next) {
@@ -43,8 +44,12 @@ router.get("/open/reviews/:name", function(req,res,next) {
     })
 
 });
-router.get("/admin/copyright", function(req,res) {
-
+router.get("/admin/copyright", function(req,res,next) {
+    Song.find({"copyrightValidation":true},function(err,result) {
+        if (err)
+            return next(err);
+        res.send(result)
+    })
 });
 
 router.put("/secure/add-review/:id",function(req,res) {

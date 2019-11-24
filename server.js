@@ -4,17 +4,34 @@ mongoose.connect(uri, {useNewUrlParser: true,}); //connect to my mongoose db
 var Song = require('./models/song'); //get the model of the schema for each 
 var Review = require('./models/review');
 var User = require("./models/user");
+
+
 console.log('Connected to the database (mongoose)');
 
 const express = require('express');
 const bodyParser = require('body-parser');
-var app = express();  
+var cors = require('cors')
+var app = express()
+
+app.use(cors())
+
+
+cors({credentials: true, origin: true}) 
+
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 var port = process.env.PORT || 8080;        // set our port
 var router = express.Router();              // get an instance of the express Router
 // all of our routes will be prefixed with /api
 app.use('/api', router);
+
+app.use(function(req,res,next) {
+    res.header('Access-Control-Allow-Origin',"*");
+    res.header('Access-Control-Allow-Methods',"GET,PUT,POST,DELETE");
+    res.header('Access-Control-Allow-Headers',"Content-Type");
+    next();
+});
 // START THE SERVER
 // =============================================================================
 app.listen(port);
@@ -29,6 +46,7 @@ router.get('/open/songs',function(req,res,next){
     Song.find(function(err,songs) {
         if(err)
             return next(err);
+        
         res.send(songs);
     }).limit(10);
 });
@@ -40,6 +58,7 @@ router.get("/open/reviews/:name", function(req,res,next) {
     Review.find({ "songName": req.params.name},function(err,reviews){
         if(err)
             return next(err);
+     
         res.send(reviews);
     })
 
@@ -54,7 +73,6 @@ router.get("/admin/copyright", function(req,res,next) {
 
 router.put("/secure/add-review/:id",function(req,res) {
     var review = new Review({
-        //songId:req.body.songId,
         songName:req.body.songName,
         rating:req.body.rating,
         userWhoReviewed:req.body.userWhoReviewed,
@@ -63,6 +81,8 @@ router.put("/secure/add-review/:id",function(req,res) {
     review.save(function(err) {
         if(err)
             res.send("error: "+err);
+        res.header('Access-Control-Allow-Methods',"GET,PUT,POST,DELETE");
+        res.header('Access-Control-Allow-Origin',"*");
         res.send(review);
     })
 

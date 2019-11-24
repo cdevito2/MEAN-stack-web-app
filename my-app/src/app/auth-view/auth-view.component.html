@@ -1,2 +1,44 @@
 <p>auth-view works!</p>
 <h1>do functionalities with path /secure</h1>
+
+
+<h2>add review to song</h2>
+<div>
+<p>Enter Song ID</p>
+<hr>
+<input type="text" [(ngModel)]= "objId" placeHolder = "songId">
+</div>
+<hr>
+
+<div>
+<p>Enter Song Name</p>
+<hr>
+<input type="text" [(ngModel)]= "songName" placeHolder = "song title">
+</div>
+<hr>
+<div>
+<p>Enter Rating out of 5</p>
+<hr>
+<input type="Number" [(ngModel)]= "rating" min=0 max=5 >
+</div>
+<hr>
+<div>
+<p>Enter user email</p>
+<hr>
+<input type="text" [(ngModel)]= "userWhoReviewed" placeHolder = "enter useremail">
+</div>
+<hr>
+<div>
+<p>Enter any comments</p>
+<hr>
+<input type="text" [(ngModel)]= "comment" placeHolder = "enter comments">
+</div>
+<hr>
+<button (click)="makeReview()">Add review</button>
+<hr>
+<h2>add new song</h2>
+<hr>
+<h2>add rating to review</h2>
+<hr>
+<h2>can add review and song at same time</h2>
+<button (click)="logout()">LOGOUT</button>

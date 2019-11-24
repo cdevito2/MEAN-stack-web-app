@@ -33,6 +33,19 @@ export class HttpService {
       },httpOptions);
     }
 
+    createSong(title,artist,album,year,track,genre)
+    {
+      return this.http.post("http://localhost:8080/api/secure/song",
+      {
+        "title":title,
+        "artist":artist,
+        "album":album,
+        "year":year,
+        "track":track,
+        "genre":genre
+      },httpOptions);
+    }
+
 }
 const httpOptions = {
   headers: new HttpHeaders({

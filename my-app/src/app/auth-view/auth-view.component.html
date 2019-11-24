@@ -36,7 +36,52 @@
 <hr>
 <button (click)="makeReview()">Add review</button>
 <hr>
+
+
+
 <h2>add new song</h2>
+<div>
+<p>Enter Song Title</p>
+<hr>
+<input type="text" [(ngModel)]= "title" placeHolder = "title">
+</div>
+<hr>
+
+<div>
+<p>Enter Song Artist</p>
+<hr>
+<input type="text" [(ngModel)]= "artist" placeHolder = "song artist">
+</div>
+<hr>
+<div>
+<p>Enter Song Album</p>
+<hr>
+<input type="text" [(ngModel)]= "album" placeholder= "album" >
+</div>
+<hr>
+<div>
+<p>Enter Song Year</p>
+<hr>
+<input type="Number" [(ngModel)]= "year" min =1700 max = 2019>
+</div>
+<hr>
+<div>
+<p>Enter Song TrackNo</p>
+<hr>
+<input type="Number" [(ngModel)]= "track" min =0 max = 25>
+</div>
+<hr>
+<div>
+<p>Enter Song Genre</p>
+<hr>
+<input type="text" [(ngModel)]= "genre" placeHolder = "enter genre">
+</div>
+<hr>
+<button (click)="createSong()">Add Song</button>
+<hr>
+
+
+
 <hr>
 <h2>add rating to review</h2>
 <hr>

@@ -15,7 +15,14 @@ export class AuthViewComponent implements OnInit {
   rating:Number=0;
   userWhoReviewed:String="";
   comment:String="";
-  review:Object
+  review:Object;
+
+  title:String = "";
+  artist:String = "";
+  album:String = "";
+  genre:String = "";
+  track:Number=0;
+  year:Number=0;
 
   ngOnInit() {
   }
@@ -25,6 +32,14 @@ export class AuthViewComponent implements OnInit {
   }
   makeReview(){
     return this.http.addReview(this.objId,this.songName,this.rating,this.userWhoReviewed,this.comment).subscribe(data => {
+      this.review = data;
+      console.log(this.review);
+      
+    });
+  }
+
+  createSong(){
+    return this.http.createSong(this.title,this.artist,this.album,this.year,this.track,this.genre).subscribe(data => {
       this.review = data;
       console.log(this.review);
       

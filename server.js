@@ -48,7 +48,7 @@ router.get('/open/songs',function(req,res,next){
             return next(err);
         
         res.send(songs);
-    }).limit(10);
+    })
 });
 router.get("/open/search/{x}", function(req,res) {
     json.parse(x);

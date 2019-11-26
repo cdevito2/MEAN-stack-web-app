@@ -14,6 +14,12 @@ var UserSchema = new Schema({
     isAdmin:{
         type:Boolean,
         default:false
+    },
+    reviewId:{
+        type:[Schema.Types.ObjectId]
+    },
+    isActive:{
+        type:Boolean
     }
 
 

@@ -3,10 +3,6 @@ var Schema = mongoose.Schema;
 //create bear schema and model
 
 var SongSchema = new Schema({
-    /*_id: {
-        type: String,
-        required: true, max:30
-    },*/
     title: {
         type: String, 
         required: true, max: 30
@@ -38,6 +34,18 @@ var SongSchema = new Schema({
         type:Boolean,
         required:true,
         default:false
+    },
+    reviewId:{
+        type:[Schema.Types.ObjectId],ref:'Review'
+    },
+   avgRating:{
+        type:Number,
+        required:false,
+        default:0
+    },
+    numOfReviews:{
+        type:Number,
+        default:0
     }
 
 });

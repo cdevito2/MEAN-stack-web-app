@@ -10,30 +10,42 @@ export class HttpService {
 
   constructor(private http:HttpClient) { }
 
-  
+    createUser(email,password,isAdmin,isActive)//create user
+    {
+      return this.http.post("http://localhost:8080/api/secure/user",
+      {
+        "email":email,
+        "password":password,
+        "isAdmin":isAdmin,
+        "isActive":isActive
+        
+      },
+      httpOptions
+      );
+    }
 
-    getSongs()
+    getSongs()//get list of songs
     {
       return this.http.get("http://localhost:8080/api/open/songs");
     }
 
-    getReviews(nm)
+    getReviews(nm) //get reviews for specific song
     {
       return this.http.get("http://localhost:8080/api/open/reviews/"+nm)
     }
 
-    addReview(id,sName,rating,user,comment)
+    makeReview(id,rating,user,comment) //add a review to song
     {
       return this.http.put("http://localhost:8080/api/secure/add-review/"+id,
       {
-        "songName":sName,
+        "songId":id,
         "rating":rating,
-        "userWhoReviewed":user,
+        "userId":user,
         "reviewComment":comment
       },httpOptions);
     }
 
-    createSong(title,artist,album,year,track,genre)
+    createSong(title,artist,album,year,track,genre) //create a new song
     {
       return this.http.post("http://localhost:8080/api/secure/song",
       {
@@ -44,6 +56,22 @@ export class HttpService {
         "track":track,
         "genre":genre
       },httpOptions);
+    }
+
+    
+
+    //Add a rating (1-5, star etc) to reviews created by the user.
+    //POST /api/secure/song/:id
+    addReview(songId,reviewId) //add a rating to review created by user
+    {
+      var x=1;
+      //update the record of the given song ID with JSON array of properties sent in the body.
+      return this.http.post("http://localhost:8080/api/secure/song/"+songId,
+      {
+        "reviewId":reviewId,
+        "numOfRatings": ++x
+      },httpOptions
+      )
     }
 
 }

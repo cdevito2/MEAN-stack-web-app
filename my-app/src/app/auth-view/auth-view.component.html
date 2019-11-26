@@ -1,8 +1,7 @@
 <p>auth-view works!</p>
 <h1>do functionalities with path /secure</h1>
 
-
-<h2>add review to song</h2>
+<h2>ADD REVIEW TO SONG</h2>
 <div>
 <p>Enter Song ID</p>
 <hr>
@@ -11,9 +10,20 @@
 <hr>
 
 <div>
-<p>Enter Song Name</p>
+<p>Enter Review ID</p>
 <hr>
-<input type="text" [(ngModel)]= "songName" placeHolder = "song title">
+<input type="text" [(ngModel)]= "reviewId" placeHolder = "enter reviewId">
+<button (click) = "addReviewToSong()">addreviewtosong</button>
+</div>
+<hr>
+
+
+
+<h2>CREATE REVIEW</h2>
+<div>
+<p>Enter Song ID</p>
+<hr>
+<input type="text" [(ngModel)]= "songId" placeHolder = "songId">
 </div>
 <hr>
 <div>
@@ -23,9 +33,9 @@
 </div>
 <hr>
 <div>
-<p>Enter user email</p>
+<p>Enter user ID</p>
 <hr>
-<input type="text" [(ngModel)]= "userWhoReviewed" placeHolder = "enter useremail">
+<input type="text" [(ngModel)]= "userWhoReviewed" placeHolder = "enter userId">
 </div>
 <hr>
 <div>
@@ -39,7 +49,7 @@
 
 
 
-<h2>add new song</h2>
+<h2>CREATE SONG</h2>
 <div>
 <p>Enter Song Title</p>
 <hr>
@@ -77,13 +87,29 @@
 <input type="text" [(ngModel)]= "genre" placeHolder = "enter genre">
 </div>
 <hr>
+<div>
+<p>Optional: Enter Rating out of 5</p>
+<input type="Number" [(ngModel)]= "ratingAddSong" min=0 max=5 >
+</div>
+<hr>
+<div>
+<p>Optional: Enter user ID</p>
+<hr>
+<input type="text" [(ngModel)]= "userWhoReviewedAddSong" placeHolder = "enter userId">
+</div>
+<hr>
+<div>
+<p>Optional: Enter any comments</p>
+<hr>
+<input type="text" [(ngModel)]= "commentAddSong" placeHolder = "enter comments">
+</div>
 <button (click)="createSong()">Add Song</button>
 <hr>
 
 
 
 <hr>
-<h2>add rating to review</h2>
+
 <hr>
 <h2>can add review and song at same time</h2>
 <button (click)="logout()">LOGOUT</button>

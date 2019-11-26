@@ -13,17 +13,20 @@
         <p>a song obj exists</p> 
          <li *ngFor="let obj of songs">
            {{obj.title}}
-           <button>expand</button>
-          </li>
-         
+           
+           
+           
+        </li>
+        
      </ul>
 </div>
+
 <br>
 <br>
 <br>
 <div class = "reviewSearch">
     <h2>REVIEW SEARCH</h2>
-    <input type="text" [(ngModel)]= "name" placeHolder = "enter bookID">
+    <input type="text" [(ngModel)]= "id" placeHolder = "ENTER SONG ID">
     <button id="findReview" (click)="getReview()" >VIEW REVIEWS</button>
     <ul *ngIf = "reviews">
         <p>a review obj exists</p> 

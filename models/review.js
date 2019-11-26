@@ -3,28 +3,27 @@ var Schema = mongoose.Schema;
 //create bear schema and model
 
 var ReviewSchema = new Schema({
-   
-    /*songId:{
-        type:String,
-        required:true
-    },*/
-    songName: {
-        type: String, 
-        required: true, max: 30
-        
+   songId: {
+        type: Schema.Types.ObjectId, 
+        required: true, max: 30,
+        ref: 'Song'
     },
     rating: {
 	    type: Number,
 	    required: true, min:0, max:5
 	    
 	},
-	userWhoReviewed: {
-        type: String,
-        required: true, max: 30
+	userId: {
+        type: Schema.Types.ObjectId,
+        required: true, max: 30,
+        ref: 'User'
     },
     reviewComment: {
         type: String,
         required: false
+    },
+    submittedOn: {
+        type:Date
     }
 
 });

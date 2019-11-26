@@ -42,20 +42,28 @@ router.get('/', function(req, res) {
 });
 
 
-router.get('/open/songs',function(req,res,next){
-    Song.find(function(err,songs) {
+/*router.get('/open/songs',function(req,res,next){
+    Song.find({}).sort({numOfReviews:"desc"},function(err,songs) {
         if(err)
             return next(err);
-        
+        res.send(songs);
+    }).limit(10)
+});*/
+router.get('/open/songs',function(req,res,next){
+    Song.find({},function(err,songs) {
+        if(err)
+            return next(err);
         res.send(songs);
     })
 });
+
 router.get("/open/search/{x}", function(req,res) {
     json.parse(x);
     
 });
-router.get("/open/reviews/:name", function(req,res,next) {
-    Review.find({ "songName": req.params.name},function(err,reviews){
+
+router.get("/open/reviews/:id", function(req,res,next) {
+    Review.find({_id:req.params.id },function(err,reviews){
         if(err)
             return next(err);
      
@@ -63,6 +71,7 @@ router.get("/open/reviews/:name", function(req,res,next) {
     })
 
 });
+
 router.get("/admin/copyright", function(req,res,next) {
     Song.find({"copyrightValidation":true},function(err,result) {
         if (err)
@@ -71,23 +80,27 @@ router.get("/admin/copyright", function(req,res,next) {
     })
 });
 
-router.put("/secure/add-review/:id",function(req,res) {
+router.put("/secure/add-review/:id",function(req,res) { //create review
     var review = new Review({
-        songName:req.body.songName,
+        songId:req.body.songId,
         rating:req.body.rating,
-        userWhoReviewed:req.body.userWhoReviewed,
+        userId:req.body.userId,
         reviewComment:req.body.reviewComment
     })
     review.save(function(err) {
         if(err)
             res.send("error: "+err);
-        res.header('Access-Control-Allow-Methods',"GET,PUT,POST,DELETE");
-        res.header('Access-Control-Allow-Origin',"*");
+        //res.header('Access-Control-Allow-Methods',"GET,PUT,POST,DELETE");
+        //res.header('Access-Control-Allow-Origin',"*");
         res.send(review);
     })
+    
+    
+     res.send("updated item");
+
 
 });
-router.post("/secure/song",function(req,res) {
+router.post("/secure/song",function(req,res) { //create new song
     var song = new Song({
         title:req.body.title,
         artist:req.body.artist,
@@ -103,7 +116,7 @@ router.post("/secure/song",function(req,res) {
         res.send(song);
     })
 });
-router.put('/secure/song/:id',function(req,res) {
+router.put('/secure/song/:id',function(req,res) { //update song based on parameters
     Song.findByIdAndUpdate(req.params.id, {$set: req.body},function(err) {
         if (err)
             res.send("error: "+err);
@@ -116,7 +129,21 @@ router.post("/admin/copyright/:id",function(req,res) {
 });
 
 
-
+router.post("/secure/user",function(req,res) {
+    var user = new User({
+        password:req.body.password,
+        email:req.body.email,
+        isAdmin:req.body.isAdmin,
+        isActive:req.body.isActive
+        
+    });
+    user.save(function (err) {
+        if (err) {
+            res.send("error: "+err);
+        }
+        res.send(user);
+    })
+});
 
 
 

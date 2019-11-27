@@ -17,6 +17,7 @@ export class AuthViewComponent implements OnInit {
   userWhoReviewed:String="";
   comment:String="";
   review:Object;
+  song:Object;
   reviewId:String="";
   title:String = "";
   artist:String = "";
@@ -47,19 +48,35 @@ export class AuthViewComponent implements OnInit {
     });
   }
 
-  createSong(){
-    return this.http.createSong(this.title,this.artist,this.album,this.year,this.track,this.genre).subscribe(data => {
-      this.review = data;
+  createSong(){ //this creates a song  and if fields entered also creates a review and adds review to song
+      this.http.createSong(this.title,this.artist,this.album,this.year,this.track,this.genre).subscribe(data => {
+      this.song = data;
       
       //now create a review for the song 
       //String _id = {{this.review.}};
       //this.http.makeReview(/*id*/,this.ratingAddSong,this.userWhoReviewedAddSong,this.commentAddSong)
       //then update the song to have a review
-      console.log(this.review);
-      
+      console.log(this.song.toString());//this returns the songId created 
+      this.createSongAndReviewSameTime(this.song.toString(),this.ratingAddSong,this.userWhoReviewedAddSong,this.commentAddSong)
     });
-  }
-  addReviewToSong(){ //this adds a review to a song 
+      
+      
+      
+    }
+
+    createSongAndReviewSameTime(songId,ratingAddSong,userWhoReviewedAddSong,commentAddSong)
+    {
+      return this.http.makeReview(songId,ratingAddSong,userWhoReviewedAddSong,commentAddSong).subscribe(data => {
+        this.review = data;
+        console.log(this.review);
+        
+      });
+    }
+  
+  
+
+  addReviewToSong()
+  { //this adds a review to a song 
     return this.http.addReview(this.objId,this.reviewId).subscribe(data => {
       //this.review = data;
       console.log(data);

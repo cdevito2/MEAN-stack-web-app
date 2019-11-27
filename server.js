@@ -49,29 +49,34 @@ router.get('/', function(req, res) {
         res.send(songs);
     }).limit(10)
 });*/
+
+//return a list of 10 songs ordered by average rating
 router.get('/open/songs',function(req,res,next){
     Song.find({},function(err,songs) {
         if(err)
             return next(err);
-        res.send(songs);
+        
+        res.send(JSON.stringify(songs));
     })
 });
-
+//search by keyword
 router.get("/open/search/{x}", function(req,res) {
     json.parse(x);
     
 });
 
+//return all reviews for a given song ID.
 router.get("/open/reviews/:id", function(req,res,next) {
-    Review.find({_id:req.params.id },function(err,reviews){
+    Review.find({songId:req.params.id},function(err,reviews){
         if(err)
             return next(err);
      
-        res.send(reviews);
+        res.send(JSON.stringify(reviews));
     })
 
 });
 
+//Return all songs which are marked as copyright violations
 router.get("/admin/copyright", function(req,res,next) {
     Song.find({"copyrightValidation":true},function(err,result) {
         if (err)
@@ -80,7 +85,9 @@ router.get("/admin/copyright", function(req,res,next) {
     })
 });
 
+//Create a new review for the song with the given ID based on JSON array provided in the body.
 router.put("/secure/add-review/:id",function(req,res) { //create review
+    
     var review = new Review({
         songId:req.body.songId,
         rating:req.body.rating,
@@ -92,15 +99,14 @@ router.put("/secure/add-review/:id",function(req,res) { //create review
             res.send("error: "+err);
         //res.header('Access-Control-Allow-Methods',"GET,PUT,POST,DELETE");
         //res.header('Access-Control-Allow-Origin',"*");
-        res.send(review);
+        res.send(JSON.stringify(review));
     })
+    //res.send("updated item");
     
-    
-     res.send("updated item");
 
 
 });
-router.post("/secure/song",function(req,res) { //create new song
+router.post("/secure/song",function(req,res) { //save the JSON array for a song in the database and return the ID
     var song = new Song({
         title:req.body.title,
         artist:req.body.artist,
@@ -113,18 +119,21 @@ router.post("/secure/song",function(req,res) { //create new song
         if (err) {
             res.send("error: "+err);
         }
-        res.send(song);
+        
+        //res.send(song);
     })
+    res.send(song._id);
 });
-router.put('/secure/song/:id',function(req,res) { //update song based on parameters
-    Song.findByIdAndUpdate(req.params.id, {$set: req.body},function(err) {
+router.put('/secure/song/:id',function(req,res) { //update the record of the given song ID with JSON array of properties sent in the body.
+    Review.findByIdAndUpdate(req.params.id, {$set: req.body},function(err) {
         if (err)
             res.send("error: "+err);
     })
      res.send("updated item");
 });
 
-router.post("/admin/copyright/:id",function(req,res) {
+router.post("/admin/copyright/:id",function(req,res)//Set or update copyright violation attributes for a given song ID. JSON array with new values is provided in the body.
+ {
 
 });
 

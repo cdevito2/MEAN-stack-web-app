@@ -13,13 +13,12 @@
         <p>a song obj exists</p> 
          <li *ngFor="let obj of songs">
            {{obj.title}}
-           
-           
-           
+           <button (click)="isCollapsed = !isCollapsed">expand</button>
+           {{obj | json}}
         </li>
-        
-     </ul>
+    </ul>
 </div>
+
 
 <br>
 <br>

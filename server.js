@@ -7,7 +7,8 @@ var User = require("./models/user");
 //code grabbed from jagath parts.db
 const jwt = require('jsonwebtoken');
 //const secret = process.env.JWT_KEY;
-
+argon2i = require('argon2-ffi').argon2i
+crypto = require('crypto')
 
 var session = require('express-session');
 var LocalStrategy = require('passport-local').Strategy
@@ -267,22 +268,34 @@ router.post("/open/register",function(req,res) { //replacing the above route
               res.send("email already exists");
             }
             else { //if email doesnt exist then its a new account so create a new user
+               
+                
+                
                 const newUser = new User({
                   email,
                   password,
                   isActive:true,
                   isAdmin:false
                 });
-                newUser.save(function (err) {
-                    if (err) {
-                        res.send("error: "+err);
-                    }
-                    res.send(user);
+                crypto.randomBytes(32, function(err, salt) { 
+                    if(err) throw err; 
+                    //store password with argon 2
+                    argon2i.hash(req.body.password, salt).then(hash => { 
+                      console.log(hash);
+                      newUser.password = hash;
+                      newUser.save(function (err) {
+                        if (err) {
+                            res.send("error: "+err);
+                        }
+                      });
+                    });
+                
                 });
-            //now hash the password and send jwt
+                res.send(newUser); 
+               
             }    
         });
-    
+        
     }
 }); //end of create user fcn
 

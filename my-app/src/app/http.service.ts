@@ -74,6 +74,30 @@ export class HttpService {
       )
     }
 
+
+
+    registerUser(email,password)
+    {
+      console.log(email);
+      console.log(password);
+      return this.http.post("http://localhost:8080/api/open/register",
+      {
+        "email":email,
+        "password": password
+      },{responseType: 'text'})
+    }
+
+    loginUser(email,password)
+    {
+      console.log(email);
+      console.log(password);
+      return this.http.post("http://localhost:8080/api/open/login",
+      {
+        "email":email,
+        "password": password
+      },httpOptions)
+    }
+    
 }
 const httpOptions = {
   headers: new HttpHeaders({

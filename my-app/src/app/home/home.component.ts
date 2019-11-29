@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpService} from "../http.service";
 import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
+import {MatExpansionModule/*, MatAccordion*/} from '@angular/material';
 
 @Component({
   selector: 'app-home',

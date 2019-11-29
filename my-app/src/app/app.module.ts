@@ -9,6 +9,12 @@ import { AdminComponent } from './admin/admin.component';
 import { AuthViewComponent } from './auth-view/auth-view.component';
 import { AdminViewComponent } from './admin-view/admin-view.component';
 import {HttpClientModule} from '@angular/common/http';
+import {MatExpansionModule} from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RegisterComponent } from './register/register.component';
+
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -16,16 +22,21 @@ import {HttpClientModule} from '@angular/common/http';
     LoginComponent,
     AdminComponent,
     AuthViewComponent,
-    AdminViewComponent
+    AdminViewComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    MatExpansionModule,
+    BrowserAnimationsModule
+    
     
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  
 })
 export class AppModule { }

@@ -34,6 +34,7 @@ export class AuthViewComponent implements OnInit {
   ngOnInit() {
     
   }
+  
   logout()
   {
     this.router.navigate(['/login']);
@@ -43,7 +44,8 @@ export class AuthViewComponent implements OnInit {
       this.review = data;
       console.log(this.review);
       
-      
+      //then add review to song, use the songId to get the song then make a put which updates the reviewID array
+      //and increments total number of reviews
       
     });
   }
@@ -51,13 +53,16 @@ export class AuthViewComponent implements OnInit {
   createSong(){ //this creates a song  and if fields entered also creates a review and adds review to song
       this.http.createSong(this.title,this.artist,this.album,this.year,this.track,this.genre).subscribe(data => {
       this.song = data;
-      
+      console.log(this.userWhoReviewedAddSong);
       //now create a review for the song 
       //String _id = {{this.review.}};
       //this.http.makeReview(/*id*/,this.ratingAddSong,this.userWhoReviewedAddSong,this.commentAddSong)
       //then update the song to have a review
       console.log(this.song.toString());//this returns the songId created 
+      if(this.userWhoReviewedAddSong != ""){
       this.createSongAndReviewSameTime(this.song.toString(),this.ratingAddSong,this.userWhoReviewedAddSong,this.commentAddSong)
+      }
+      //now add reviewID to array in songs and increment number of reviews by 1
     });
       
       
@@ -71,6 +76,7 @@ export class AuthViewComponent implements OnInit {
         console.log(this.review);
         
       });
+      //last step is to add the review ID to the song that was created(may not be necessary)
     }
   
   

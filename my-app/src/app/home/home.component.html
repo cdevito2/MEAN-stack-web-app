@@ -12,12 +12,26 @@
     <ul *ngIf = "songs">
         <p>a song obj exists</p> 
          <li *ngFor="let obj of songs">
-           {{obj.title}}
-           <button (click)="isCollapsed = !isCollapsed">expand</button>
-           {{obj | json}}
+           <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{obj.title}}
+                </mat-panel-title>
+                <mat-panel-description>
+                  Click on title to expand
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <mat-panel-description>
+                
+                {{obj | json}}
+              </mat-panel-description>
+              
+            </mat-expansion-panel>
         </li>
     </ul>
 </div>
+
+
 
 
 <br>

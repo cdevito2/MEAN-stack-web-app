@@ -1,21 +1,48 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
+import {HttpService} from "../http.service";
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
-  constructor(private router:Router) { }
+  email:String="";
+  password:String="";
+  
+  loginResponse:String="";
+  constructor(private router:Router,
+    
+    private _http:HttpService) { }
 
   ngOnInit() {
   }
 
+  register()
+  {
+    this.router.navigate(['/register']);
+  }
   verifyLogin()
   {
-    this.router.navigate(['/auth-view']);
+    this._http.loginUser(this.email,this.password).subscribe(data => {
+      console.log(data.toString());
+      this.loginResponse = data.toString();
+      /*if(this.loginResponse == 'hooray! welcome to our api!')
+      {
+        this.loginResponse = "ERROR INVALID USERNAME/PASSWORD"
+        
+      }
+      else{
+        console.log("route to auth view");
+        this.router.navigate(['/auth-view']);
+      }*/
+        
+      
+    });
+
   }
+    
+  
+  
 
 }

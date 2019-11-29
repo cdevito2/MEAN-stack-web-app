@@ -4,8 +4,14 @@ mongoose.connect(uri, {useNewUrlParser: true,}); //connect to my mongoose db
 var Song = require('./models/song'); //get the model of the schema for each 
 var Review = require('./models/review');
 var User = require("./models/user");
+//code grabbed from jagath parts.db
+const jwt = require('jsonwebtoken');
+//const secret = process.env.JWT_KEY;
 
 
+var session = require('express-session');
+var LocalStrategy = require('passport-local').Strategy
+const passport = require('passport');
 console.log('Connected to the database (mongoose)');
 
 const express = require('express');
@@ -14,8 +20,15 @@ var cors = require('cors')
 var app = express()
 
 app.use(cors())
-
-
+//may have to put this lower
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(session({
+    secret:"sdfnsdofindsonds",
+    cookie:{secure:true},
+    saveUninitialized:true,
+    resave:false
+}));
 cors({credentials: true, origin: true}) 
 
 
@@ -38,10 +51,12 @@ app.listen(port);
 console.log('Magic happens on port ' + port);
 
 router.get('/', function(req, res) {
-    res.json({ message: 'hooray! welcome to our api!' });   
+    res.send('hooray! welcome to our api!' );   
 });
 
-
+router.get('/loginsuccess', function(req, res) {
+    res.send('you loggin in');   
+});
 /*router.get('/open/songs',function(req,res,next){
     Song.find({}).sort({numOfReviews:"desc"},function(err,songs) {
         if(err)
@@ -78,16 +93,39 @@ router.get("/open/reviews/:id", function(req,res,next) {
 
 //Return all songs which are marked as copyright violations
 router.get("/admin/copyright", function(req,res,next) {
+    if (typeof req.headers.authorization === 'undefined')
+		return res.status(401).send("Access denied. Missing Auth header.");
+
+	const token = req.headers.authorization.split(" ");
+	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
+		return res.status(401).send("Access denied. Missing Token.");
+    }
+    try{
     Song.find({"copyrightValidation":true},function(err,result) {
         if (err)
             return next(err);
         res.send(result)
     })
+    }
+        catch(ex){
+                return res.send("error finding from songdb");
+            }
 });
 
 //Create a new review for the song with the given ID based on JSON array provided in the body.
 router.put("/secure/add-review/:id",function(req,res) { //create review
-    
+    if (typeof req.headers.authorization === 'undefined')
+		return res.status(401).send("Access denied. Missing Auth header.");
+
+	const token = req.headers.authorization.split(" ");
+	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
+		return res.status(401).send("Access denied. Missing Token.");
+    }
+    try{
+
+    const payload = jwt.verify(token[1], secret);
+	console.log("JWT: ", JSON.stringify(payload));
+
     var review = new Review({
         songId:req.body.songId,
         rating:req.body.rating,
@@ -101,12 +139,28 @@ router.put("/secure/add-review/:id",function(req,res) { //create review
         //res.header('Access-Control-Allow-Origin',"*");
         res.send(JSON.stringify(review));
     })
+    }catch(ex){
+        return res.status(401).send("Access denied. Invalid token.");
+    }
     //res.send("updated item");
     
 
 
 });
 router.post("/secure/song",function(req,res) { //save the JSON array for a song in the database and return the ID
+    if (typeof req.headers.authorization === 'undefined')
+		return res.status(401).send("Access denied. Missing Auth header.");
+
+	const token = req.headers.authorization.split(" ");
+	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
+		return res.status(401).send("Access denied. Missing Token.");
+    }
+    try{
+
+    const payload = jwt.verify(token[1], secret);
+	console.log("JWT: ", JSON.stringify(payload));
+    
+    
     var song = new Song({
         title:req.body.title,
         artist:req.body.artist,
@@ -123,13 +177,32 @@ router.post("/secure/song",function(req,res) { //save the JSON array for a song 
         //res.send(song);
     })
     res.send(song._id);
+}
+catch(ex){
+    res.send("error adding song");
+}
 });
 router.put('/secure/song/:id',function(req,res) { //update the record of the given song ID with JSON array of properties sent in the body.
+    if (typeof req.headers.authorization === 'undefined')
+		return res.status(401).send("Access denied. Missing Auth header.");
+
+	const token = req.headers.authorization.split(" ");
+	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
+		return res.status(401).send("Access denied. Missing Token.");
+    }
+    try{
+    const payload = jwt.verify(token[1], secret);
+    console.log("JWT: ", JSON.stringify(payload));   
     Review.findByIdAndUpdate(req.params.id, {$set: req.body},function(err) {
         if (err)
             res.send("error: "+err);
     })
      res.send("updated item");
+    }
+    catch(ex)
+    {
+        res.send("error updating song");
+    }
 });
 
 router.post("/admin/copyright/:id",function(req,res)//Set or update copyright violation attributes for a given song ID. JSON array with new values is provided in the body.
@@ -138,7 +211,20 @@ router.post("/admin/copyright/:id",function(req,res)//Set or update copyright vi
 });
 
 
-router.post("/secure/user",function(req,res) {
+/*router.post("/secure/user",function(req,res) {
+    if (typeof req.headers.authorization === 'undefined')
+		return res.status(401).send("Access denied. Missing Auth header.");
+
+	const token = req.headers.authorization.split(" ");
+	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
+		return res.status(401).send("Access denied. Missing Token.");
+    }
+    try{
+
+    //have to hash password
+    const payload = jwt.verify(token[1], secret);
+    console.log("JWT: ", JSON.stringify(payload));
+    //hash here!
     var user = new User({
         password:req.body.password,
         email:req.body.email,
@@ -152,7 +238,99 @@ router.post("/secure/user",function(req,res) {
         }
         res.send(user);
     })
-});
+    }
+    catch(ex)
+    {
+        res.send("error creating user")
+    }
+});*/
+
+router.post("/open/register",function(req,res) { //replacing the above route
+    //it is open because the person registering doesnt have the jwt as they dont have an account
+    //create acc and give them the jwt
+    
+    const { email, password } = req.body;
+    let errors = [];
+    if (!email || !password) {
+        //errors.push({ msg: 'Please enter all fields' });
+        res.send("enter all fields");
+      }
+    
+    /*if (errors.length > 0) {
+        res.send("erros man");
+      }*/
+    else
+    {
+        User.findOne({ email: email }).then(user => {
+            if (user) 
+            {
+              res.send("email already exists");
+            }
+            else { //if email doesnt exist then its a new account so create a new user
+                const newUser = new User({
+                  email,
+                  password,
+                  isActive:true,
+                  isAdmin:false
+                });
+                newUser.save(function (err) {
+                    if (err) {
+                        res.send("error: "+err);
+                    }
+                    res.send(user);
+                });
+            //now hash the password and send jwt
+            }    
+        });
+    
+    }
+}); //end of create user fcn
+
+app.post('/open/login',passport.authenticate('local'),(req,res)=>{
+    console.log("here");
+    res.send("response");
+})
+  
+
+
+passport.use(new LocalStrategy({ usernameField: 'email' }, (userEmail, password, done) => {
+        // Match user
+        User.findOne({email:userEmail},(err,user)=>{
+            if (err)console.log("user.findone error")
+            if(!user){
+                return cb(null,false,{message:"That email is not registered"})
+            }
+        
+        User.comparePassword(password, user.password, function(err, isMatch){
+              if(err) throw err;
+              if(isMatch){
+                  return done(null, user);
+              } else {
+                  return done(null, false, {message: 'Invalid password'});
+              }
+            // Match password
+           
+          });
+          
+              
+          
+      })
+      
+      
+      passport.serializeUser(function(user, done) {
+          done(null, user.id);
+        });
+      
+        passport.deserializeUser(function(id, done) {
+          User.findById(id, function(err, user) {
+            done(err, user);
+          });
+        });
+        
+
+
+})
+); //end of password part
 
 
 

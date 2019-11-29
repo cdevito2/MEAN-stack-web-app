@@ -3,13 +3,13 @@ var Schema = mongoose.Schema;
 //create Review schema and model
 
 var UserSchema = new Schema({
-   password:{
-        type:String,
-        required:true,max:30
-    },
     email:{
         type:String,
         required:true
+    },
+    password:{
+        type:String,
+        required:true,max:30
     },
     isAdmin:{
         type:Boolean,

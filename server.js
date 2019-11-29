@@ -30,7 +30,7 @@ app.use(session({
     resave:false
 }));
 cors({credentials: true, origin: true}) 
-
+app.use(express.json())
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -286,39 +286,38 @@ router.post("/open/register",function(req,res) { //replacing the above route
     }
 }); //end of create user fcn
 
-app.post('/open/login',passport.authenticate('local'),(req,res)=>{
-    console.log("here");
-    res.send("response");
+router.post('/open/login',passport.authenticate('local',{failureRedirect: '/api/open/login/error'}),(req,res)=>{
+    res.send(JSON.stringify(req.user));
 })
+
+router.get("/open/login/error",function(req,res){
+    res.send(JSON.stringify("you entered invalid info"))
+});
   
 
 
-passport.use(new LocalStrategy({ usernameField: 'email' }, (userEmail, password, done) => {
+passport.use(new LocalStrategy({ usernameField: 'email', passwordField: 'password' }, (email, password, done) => {
         // Match user
-        User.findOne({email:userEmail},(err,user)=>{
-            if (err)console.log("user.findone error")
-            if(!user){
-                return cb(null,false,{message:"That email is not registered"})
+        console.log("in passport local strategy")
+       User.findOne({email:email}, function(err,user){
+           if(err){
+            console.log("cant find user")
+            return done(null,false, )
+        }
+        else{
+            if (!user){
+                return done(null,false,{ message: 'That email is not registered' })
             }
-        
-        User.comparePassword(password, user.password, function(err, isMatch){
-              if(err) throw err;
-              if(isMatch){
-                  return done(null, user);
-              } else {
-                  return done(null, false, {message: 'Invalid password'});
-              }
-            // Match password
-           
-          });
-          
-              
-          
-      })
+            else{
+                //password check
+                return done(null,user)
+            }
+        }
+       }) 
       
       
       passport.serializeUser(function(user, done) {
-          done(null, user.id);
+          done(null, user._id);
         });
       
         passport.deserializeUser(function(id, done) {
@@ -330,7 +329,7 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (userEmail, password,
 
 
 })
-); //end of password part
+); 
 
 
 

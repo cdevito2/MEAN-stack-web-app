@@ -27,10 +27,13 @@ export class RegisterComponent implements OnInit {
       this.registerResponse = "EMAIL IS ALREADY REGISTERED TO AN ACCOUNT";
       console.log("hi");
     }
-    else{
-      this.router.navigate(['/login']);
+    else if (this.newEmail == "" || this.newPassword == "")
+      {
+        this.registerResponse = "PLEASE ENTER ALL FIELDS";
       }
-
+      else{
+        this.router.navigate(['/login']);
+      }
 
 
     });

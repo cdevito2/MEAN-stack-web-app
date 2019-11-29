@@ -25,9 +25,10 @@ export class LoginComponent implements OnInit {
   verifyLogin()
   {
     this._http.loginUser(this.email,this.password).subscribe(data => {
+      console.log(data);
       console.log(data.toString());
       this.loginResponse = data.toString();
-      /*if(this.loginResponse == 'hooray! welcome to our api!')
+      if(this.loginResponse == 'you entered invalid info')
       {
         this.loginResponse = "ERROR INVALID USERNAME/PASSWORD"
         
@@ -35,7 +36,7 @@ export class LoginComponent implements OnInit {
       else{
         console.log("route to auth view");
         this.router.navigate(['/auth-view']);
-      }*/
+      }
         
       
     });

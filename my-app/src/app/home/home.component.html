@@ -12,6 +12,7 @@
     <ul *ngIf = "songs">
         <p>a song obj exists</p> 
          <li *ngFor="let obj of songs">
+           
            <mat-expansion-panel>
               <mat-expansion-panel-header>
                 <mat-panel-title>
@@ -24,9 +25,14 @@
               <mat-panel-description>
                 
                 {{obj | json}}
+                {{result}}
+                <button (click) = getRecent()>RECENT REVIEW</button>
+                
+                
               </mat-panel-description>
               
             </mat-expansion-panel>
+          
         </li>
     </ul>
 </div>

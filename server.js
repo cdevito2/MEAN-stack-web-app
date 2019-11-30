@@ -12,6 +12,7 @@ crypto = require('crypto')
 
 var session = require('express-session');
 var LocalStrategy = require('passport-local').Strategy
+
 const passport = require('passport');
 console.log('Connected to the database (mongoose)');
 
@@ -72,7 +73,7 @@ router.get('/open/songs',function(req,res,next){
         if(err)
             return next(err);
         
-        res.send(JSON.stringify(songs));
+        res.send(songs);
     })
 });
 //search by keyword
@@ -80,6 +81,18 @@ router.get("/open/search/{x}", function(req,res) {
     json.parse(x);
     
 });
+
+
+//return most recent review for a given song ID.
+router.get("/open/recentreviews/:id", function(req,res,next) {
+    Review.find({songId:req.params.id}).sort({submittedOn:'desc'}).limit(1)
+    .exec(function(err,reviews){
+        if(err)
+            res.send(err);
+        return res.send(JSON.stringify(reviews))
+    })
+});
+
 
 //return all reviews for a given song ID.
 router.get("/open/reviews/:id", function(req,res,next) {
@@ -115,30 +128,31 @@ router.get("/admin/copyright", function(req,res,next) {
 
 //Create a new review for the song with the given ID based on JSON array provided in the body.
 router.put("/secure/add-review/:id",function(req,res) { //create review
-    if (typeof req.headers.authorization === 'undefined')
+    /*if (typeof req.headers.authorization === 'undefined')
 		return res.status(401).send("Access denied. Missing Auth header.");
 
 	const token = req.headers.authorization.split(" ");
 	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
 		return res.status(401).send("Access denied. Missing Token.");
-    }
+    }*/
     try{
 
-    const payload = jwt.verify(token[1], secret);
-	console.log("JWT: ", JSON.stringify(payload));
+    //const payload = jwt.verify(token[1], secret);
+	//console.log("JWT: ", JSON.stringify(payload));
 
     var review = new Review({
         songId:req.body.songId,
         rating:req.body.rating,
         userId:req.body.userId,
-        reviewComment:req.body.reviewComment
+        reviewComment:req.body.reviewComment,
+        submittedOn:req.body.submittedOn
     })
     review.save(function(err) {
         if(err)
             res.send("error: "+err);
         //res.header('Access-Control-Allow-Methods',"GET,PUT,POST,DELETE");
         //res.header('Access-Control-Allow-Origin',"*");
-        res.send(JSON.stringify(review));
+        res.send(review._id);
     })
     }catch(ex){
         return res.status(401).send("Access denied. Invalid token.");
@@ -149,17 +163,10 @@ router.put("/secure/add-review/:id",function(req,res) { //create review
 
 });
 router.post("/secure/song",function(req,res) { //save the JSON array for a song in the database and return the ID
-    if (typeof req.headers.authorization === 'undefined')
-		return res.status(401).send("Access denied. Missing Auth header.");
-
-	const token = req.headers.authorization.split(" ");
-	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
-		return res.status(401).send("Access denied. Missing Token.");
-    }
+    
     try{
 
-    const payload = jwt.verify(token[1], secret);
-	console.log("JWT: ", JSON.stringify(payload));
+  
     
     
     var song = new Song({
@@ -184,25 +191,18 @@ catch(ex){
 }
 });
 router.put('/secure/song/:id',function(req,res) { //update the record of the given song ID with JSON array of properties sent in the body.
-    if (typeof req.headers.authorization === 'undefined')
-		return res.status(401).send("Access denied. Missing Auth header.");
-
-	const token = req.headers.authorization.split(" ");
-	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
-		return res.status(401).send("Access denied. Missing Token.");
-    }
+    
     try{
-    const payload = jwt.verify(token[1], secret);
-    console.log("JWT: ", JSON.stringify(payload));   
+       
     Review.findByIdAndUpdate(req.params.id, {$set: req.body},function(err) {
         if (err)
             res.send("error: "+err);
     })
-     res.send("updated item");
+     res.send(JSON.parse("updated item"));
     }
     catch(ex)
     {
-        res.send("error updating song");
+        res.send(ex);
     }
 });
 
@@ -303,12 +303,16 @@ router.post('/open/login',passport.authenticate('local',{failureRedirect: '/api/
     res.send(JSON.stringify(req.user));
 })
 
+router.post('/open/adminlogin',passport.authenticate('local',{failureRedirect: '/api/open/login/error'}),(req,res)=>{
+    res.send(req.user);
+})
+
 router.get("/open/login/error",function(req,res){
     res.send(JSON.stringify("you entered invalid info"))
 });
   
 
-
+//for auth user(not admin)
 passport.use(new LocalStrategy({ usernameField: 'email', passwordField: 'password' }, (email, password, done) => {
         // Match user
         console.log("in passport local strategy")
@@ -347,12 +351,7 @@ passport.use(new LocalStrategy({ usernameField: 'email', passwordField: 'passwor
                             return done(null,false)
                         }
                     })
-                
-                
-                
-                
-               
-            }
+                }
         }
        }) 
       
@@ -366,11 +365,11 @@ passport.use(new LocalStrategy({ usernameField: 'email', passwordField: 'passwor
             done(err, user);
           });
         });
-        
-
-
-})
+        })
 ); 
+ 
+
+
 
 
 

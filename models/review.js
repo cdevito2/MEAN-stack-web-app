@@ -23,7 +23,8 @@ var ReviewSchema = new Schema({
         required: false
     },
     submittedOn: {
-        type:Date
+        type:Date,
+        requires:true
     }
 
 });

@@ -25,7 +25,7 @@ export class AuthViewComponent implements OnInit {
   genre:String = "";
   track:Number=0;
   year:Number=0;
-
+  
 
   //stuff for add song and rating at same time
   ratingAddSong:Number=0;
@@ -54,10 +54,7 @@ export class AuthViewComponent implements OnInit {
       this.http.createSong(this.title,this.artist,this.album,this.year,this.track,this.genre).subscribe(data => {
       this.song = data;
       console.log(this.userWhoReviewedAddSong);
-      //now create a review for the song 
-      //String _id = {{this.review.}};
-      //this.http.makeReview(/*id*/,this.ratingAddSong,this.userWhoReviewedAddSong,this.commentAddSong)
-      //then update the song to have a review
+      
       console.log(this.song.toString());//this returns the songId created 
       if(this.userWhoReviewedAddSong != ""){
       this.createSongAndReviewSameTime(this.song.toString(),this.ratingAddSong,this.userWhoReviewedAddSong,this.commentAddSong)
@@ -74,12 +71,24 @@ export class AuthViewComponent implements OnInit {
       return this.http.makeReview(songId,ratingAddSong,userWhoReviewedAddSong,commentAddSong).subscribe(data => {
         this.review = data;
         console.log(this.review);
-        
+        this.updateSongwithReview(this.song.toString(),this.review.toString())
       });
       //last step is to add the review ID to the song that was created(may not be necessary)
+      
     }
   
-  
+  updateSongwithReview(songIdToAdd,reviewToAdd)//this gets called once song and review created at same time
+  {
+    console.log("songIdtoadd");
+    console.log(songIdToAdd);
+    console.log("reviewId to add to array")
+    console.log(reviewToAdd)
+    return this.http.addReview(songIdToAdd,reviewToAdd).subscribe(data => {
+      //this.review = data;
+      console.log(data.toString());
+
+    });
+  }
 
   addReviewToSong()
   { //this adds a review to a song 
@@ -88,4 +97,7 @@ export class AuthViewComponent implements OnInit {
       console.log(data);
   });
   }
+
+
+  
 }

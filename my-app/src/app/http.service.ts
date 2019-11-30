@@ -34,6 +34,11 @@ export class HttpService {
       return this.http.get("http://localhost:8080/api/open/reviews/"+nm)
     }
 
+    getRecentReview(nm) //get reviews for specific song
+    {
+      return this.http.get("http://localhost:8080/api/open/recentreviews/"+nm)
+    }
+
     makeReview(id,rating,user,comment) //add a review to song
     {
       return this.http.put("http://localhost:8080/api/secure/add-review/"+id,
@@ -41,7 +46,8 @@ export class HttpService {
         "songId":id,
         "rating":rating,
         "userId":user,
-        "reviewComment":comment
+        "reviewComment":comment,
+        "submittedOn":Date.now()
       },httpOptions);
     }
 
@@ -64,13 +70,13 @@ export class HttpService {
     //POST /api/secure/song/:id
     addReview(songId,reviewId) //add a rating to review created by user
     {
-      var x=1;
+      
       //update the record of the given song ID with JSON array of properties sent in the body.
-      return this.http.post("http://localhost:8080/api/secure/song/"+songId,
+      return this.http.put("http://localhost:8080/api/secure/song/"+songId,
       {
-        "reviewId":reviewId,
-        "numOfRatings": ++x
-      },httpOptions
+        "reviewId":reviewId
+        
+      }
       )
     }
 
@@ -92,6 +98,17 @@ export class HttpService {
       console.log(email);
       console.log(password);
       return this.http.post("http://localhost:8080/api/open/login",
+      {
+        "email":email,
+        "password": password
+      },httpOptions)
+    }
+
+    loginAdmin(email,password)
+    {
+      console.log(email);
+      console.log(password);
+      return this.http.post("http://localhost:8080/api/open/adminlogin",
       {
         "email":email,
         "password": password

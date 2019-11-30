@@ -9,7 +9,7 @@ import {HttpService} from "../http.service";
 export class LoginComponent implements OnInit {
   email:String="";
   password:String="";
-  
+  loginObj:Object;
   loginResponse:String="";
   constructor(private router:Router,
     
@@ -38,12 +38,19 @@ export class LoginComponent implements OnInit {
     else{
     this._http.loginUser(this.email,this.password).subscribe(data => {
       console.log(data);
-      console.log(data.toString());
+      
+      
+      this.loginObj = data;
+      console.log(this.loginObj["isAdmin"]);
       this.loginResponse = data.toString();
       if(this.loginResponse == 'you entered invalid info')
       {
         this.loginResponse = "ERROR INVALID USERNAME/PASSWORD"
         
+      }
+      else if (this.loginObj["isAdmin"] == true)
+      {
+        this.router.navigate(['/admin-view']);
       }
       else{
         console.log("route to auth view");

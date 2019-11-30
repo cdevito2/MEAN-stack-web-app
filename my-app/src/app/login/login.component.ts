@@ -22,8 +22,20 @@ export class LoginComponent implements OnInit {
   {
     this.router.navigate(['/register']);
   }
-  verifyLogin()
+  validateEmail(email) 
   {
+    //console.log("hi");
+      var re = /\S+@\S+\.\S+/;
+      return re.test(email);
+  }
+  verifyLogin()
+  { 
+    var isValid = this.validateEmail(this.email)
+    if(!isValid)
+    {
+      this.loginResponse = "INVALID EMAIL FORMAT"
+    }
+    else{
     this._http.loginUser(this.email,this.password).subscribe(data => {
       console.log(data);
       console.log(data.toString());
@@ -42,7 +54,7 @@ export class LoginComponent implements OnInit {
     });
 
   }
-    
+} 
   
   
 

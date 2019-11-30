@@ -315,13 +315,18 @@ passport.use(new LocalStrategy({ usernameField: 'email', passwordField: 'passwor
        User.findOne({email:email}, function(err,user){
            if(err){
             console.log("cant find user")
-            return done(null,false, )
-        }
+            return done(null,false)
+             }
+            
         else{
             if (!user){
                 return done(null,false,{ message: 'That email is not registered' })
             }
             else{
+                if(user.isActive == false)
+                {
+                return done(null,false)
+                }
                 //password check
                 console.log(user.password);
                 console.log(password)

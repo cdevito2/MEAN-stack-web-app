@@ -8,6 +8,7 @@ import {HttpService} from "../http.service";
 })
 export class AdminViewComponent implements OnInit {
   userId:String="";
+  userId2:String="";
   constructor(private router:Router,private http:HttpService) { }
 
   ngOnInit() {
@@ -24,7 +25,26 @@ export class AdminViewComponent implements OnInit {
     });
   }
 
-
+  deactivate()
+  {
+    return this.http.toggle(this.userId2,false).subscribe(data => {
+      console.log(data);
+      
+      //then add review to song, use the songId to get the song then make a put which updates the reviewID array
+      //and increments total number of reviews
+      
+    });
+  }
+  activate()
+  {
+    return this.http.toggle(this.userId2,true).subscribe(data => {
+      console.log(data);
+      
+      //then add review to song, use the songId to get the song then make a put which updates the reviewID array
+      //and increments total number of reviews
+      
+    });
+  }
   logout()
   {
     this.router.navigate(['/login']);

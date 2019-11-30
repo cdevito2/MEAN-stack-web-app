@@ -123,6 +123,14 @@ export class HttpService {
       })
     }
 
+    toggle(userId,trueOrFalse)
+    {
+      return this.http.put("http://localhost:8080/api/admin/toggle/"+userId,
+      {
+        isActive:trueOrFalse
+      })
+    }
+    
 
 
 

@@ -220,6 +220,24 @@ router.put("/admin/enable/:id",function(req,res)
     
 })
 
+router.put("/admin/toggle/:id",function(req,res)
+{
+    console.log("hi")
+    User.findByIdAndUpdate(req.params.id, {$set: req.body},function(err,user) {
+        if (err)
+            res.send("error: "+err);
+        console.log(user);
+    })
+
+     res.send(JSON.stringify("updated!"));
+    
+})
+
+
+
+
+
+
 /*router.post("/secure/user",function(req,res) {
     if (typeof req.headers.authorization === 'undefined')
 		return res.status(401).send("Access denied. Missing Auth header.");

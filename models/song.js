@@ -26,6 +26,10 @@ var SongSchema = new Schema({
 	    type :Number,
 	    required: true, min: 0, max: 20
     },
+    visible: {
+        type:Boolean,
+        default:true
+    },
     genre:{
         type:String,
         requierd:true

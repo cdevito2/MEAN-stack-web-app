@@ -10,6 +10,13 @@
 </div>
 <h2>mark song as hidden or clear it</h2>
 <hr>
+<div>
+<p>Enter user ID</p>
+<hr>
+<input type="text" [(ngModel)]= "songId" placeHolder = "enter songId">
+<button (click)="hide()">HIDE</button>
+<button (click)="show()">SHOW</button>
+</div>
 
 <h2>mark user as activated/deactivated</h2>
 <hr>

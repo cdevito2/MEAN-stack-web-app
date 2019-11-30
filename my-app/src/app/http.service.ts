@@ -131,6 +131,13 @@ export class HttpService {
       })
     }
     
+    toggleSong(songId,trueOrFalse)
+    {
+      return this.http.put("http://localhost:8080/api/admin/togglesong/"+songId,
+      {
+        visible:trueOrFalse
+      })
+    }
 
 
 

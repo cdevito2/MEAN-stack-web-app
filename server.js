@@ -69,12 +69,15 @@ router.get('/loginsuccess', function(req, res) {
 
 //return a list of 10 songs ordered by average rating
 router.get('/open/songs',function(req,res,next){
-    Song.find({},function(err,songs) {
+    Song.find({visible:true})//have to add .sort(avgrating highest)
+    .exec(function(err,songs){
         if(err)
             return next(err);
-        
-        res.send(songs);
+        return res.send(songs)
     })
+    
+    
+   
 });
 //search by keyword
 router.get("/open/search/{x}", function(req,res) {
@@ -227,6 +230,19 @@ router.put("/admin/toggle/:id",function(req,res)
         if (err)
             res.send("error: "+err);
         console.log(user);
+    })
+
+     res.send(JSON.stringify("updated!"));
+    
+})
+
+router.put("/admin/togglesong/:id",function(req,res)
+{
+    console.log("hi")
+    Song.findByIdAndUpdate(req.params.id, {$set: req.body},function(err,song) {
+        if (err)
+            res.send("error: "+err);
+        console.log(song);
     })
 
      res.send(JSON.stringify("updated!"));

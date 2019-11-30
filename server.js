@@ -323,7 +323,30 @@ passport.use(new LocalStrategy({ usernameField: 'email', passwordField: 'passwor
             }
             else{
                 //password check
-                return done(null,user)
+                console.log(user.password);
+                console.log(password)
+                
+                var pWord = new Buffer(password);
+                var result;
+                argon2i.verify(user.password,pWord).then(correct => 
+                    {
+                        result = correct;
+                        console.log("correct")
+                        console.log(correct)
+                        if (correct == true)
+                        {
+                
+                            return done(null,user)
+                        }
+                        else{
+                            return done(null,false)
+                        }
+                    })
+                
+                
+                
+                
+               
             }
         }
        }) 

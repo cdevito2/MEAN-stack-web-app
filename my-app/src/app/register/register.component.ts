@@ -15,28 +15,42 @@ export class RegisterComponent implements OnInit {
   private registerResponse:String="";
   ngOnInit() {
   }
-
+  validateEmail(email) 
+  {
+    //console.log("hi");
+      var re = /\S+@\S+\.\S+/;
+      return re.test(email);
+  }
 
   createUser()
   {
-    this._http.registerUser(this.newEmail,this.newPassword).subscribe(data => {
-      console.log(data);
-      this.response = data.toString();
-      if (this.response == "email already exists")
+    var isValid = this.validateEmail(this.newEmail)
+    if(!isValid)
     {
-      this.registerResponse = "EMAIL IS ALREADY REGISTERED TO AN ACCOUNT";
-      console.log("hi");
+      this.registerResponse = "INVALID EMAIL FORMAT"
     }
-    else if (this.newEmail == "" || this.newPassword == "")
+    else{
+      this._http.registerUser(this.newEmail,this.newPassword).subscribe(data => {
+        console.log(data);
+        this.response = data.toString();
+        if (this.response == "email already exists")
       {
-        this.registerResponse = "PLEASE ENTER ALL FIELDS";
+        this.registerResponse = "EMAIL IS ALREADY REGISTERED TO AN ACCOUNT";
+        console.log("hi");
       }
-      else{
-        this.router.navigate(['/login']);
-      }
+      else if (this.newEmail == "" || this.newPassword == "")
+        {
+          this.registerResponse = "PLEASE ENTER ALL FIELDS";
+        }
+        else{
+          this.router.navigate(['/login']);
+        }
+  
+  
+      });
+    }
 
-
-    });
+    
     
     //check if email is same as another email in user table
     //validate and make sure email is in correct format

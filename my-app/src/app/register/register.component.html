@@ -2,7 +2,10 @@
 
 
 <h3>CREATE ACCOUNT</h3>
-<input type="text"  placeHolder = "enter email"[(ngModel)] = "newEmail"><input type="text"  placeHolder = "password"[(ngModel)] = "newPassword">
+<input type="email" required = true placeHolder = "enter email"[(ngModel)] = "newEmail" required
+pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" email>
+
+<input type="text"  placeHolder = "password"[(ngModel)] = "newPassword">
 
 <button (click)="createUser()">CREATE ACCOUNT</button>
 

@@ -115,7 +115,24 @@ export class HttpService {
       },httpOptions)
     }
     
+    enableUserAdmin(userId)
+    {
+      return this.http.put("http://localhost:8080/api/admin/enable/"+userId,
+      {
+        isAdmin:true
+      })
+    }
+
+
+
+
+
 }
+
+
+
+
+
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-Type':  'application/json',

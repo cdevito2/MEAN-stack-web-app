@@ -1,8 +1,14 @@
 <p>admin-view works!</p>
 <h2>grant site manager access to user</h2>
 <hr>
+<div>
+<p>Optional: Enter user ID</p>
+<hr>
+<input type="text" [(ngModel)]= "userId" placeHolder = "enter userId">
+
+<button (click)="enableUserAdmin()">ENABLE ADMIN</button>
+</div>
 <h2>mark song as hidden or clear it</h2>
-<button></button>
 <hr>
 
 <h2>mark user as activated/deactivated</h2>

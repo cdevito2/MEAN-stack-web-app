@@ -165,10 +165,6 @@ router.put("/secure/add-review/:id",function(req,res) { //create review
 router.post("/secure/song",function(req,res) { //save the JSON array for a song in the database and return the ID
     
     try{
-
-  
-    
-    
     var song = new Song({
         title:req.body.title,
         artist:req.body.artist,
@@ -211,6 +207,18 @@ router.post("/admin/copyright/:id",function(req,res)//Set or update copyright vi
 
 });
 
+router.put("/admin/enable/:id",function(req,res)
+{
+    console.log("hi")
+    User.findByIdAndUpdate(req.params.id, {$set: req.body},function(err,user) {
+        if (err)
+            res.send("error: "+err);
+        console.log(user);
+    })
+
+     res.send(JSON.stringify("updated!"));
+    
+})
 
 /*router.post("/secure/user",function(req,res) {
     if (typeof req.headers.authorization === 'undefined')
@@ -268,9 +276,6 @@ router.post("/open/register",function(req,res) { //replacing the above route
               res.send("email already exists");
             }
             else { //if email doesnt exist then its a new account so create a new user
-               
-                
-                
                 const newUser = new User({
                   email,
                   password,

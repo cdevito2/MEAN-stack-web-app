@@ -25,7 +25,8 @@ export class AuthViewComponent implements OnInit {
   genre:String = "";
   track:Number=0;
   year:Number=0;
-  
+  email:String="";
+  password:String="";
 
   //stuff for add song and rating at same time
   ratingAddSong:Number=0;
@@ -105,7 +106,20 @@ export class AuthViewComponent implements OnInit {
       console.log(data);
   });
   }
-
+  adminStuff()
+  {
+    return this.http.loginAdmin(this.email,this.password).subscribe(data => {
+      //this.review = data;
+      console.log(data);
+      if (data["isAdmin"] == true)
+      {
+        this.router.navigate(['/admin-view']);
+      }
+      else{
+        alert("not admin")
+      }
+  });
+  }
 
   
 }

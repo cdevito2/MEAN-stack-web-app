@@ -43,19 +43,20 @@ export class LoginComponent implements OnInit {
       //this.token = JSON.stringify(data);
       localStorage.setItem('token',JSON.stringify(data))
       console.log(localStorage.getItem('token'))
-      this.loginObj = data;
-      console.log(this.loginObj["isAdmin"]);
+      //this.loginObj = data;
+      //console.log(this.loginObj["isAdmin"]);
       this.loginResponse = data.toString();
+      
+      
+      
+      
       if(this.loginResponse == 'you entered invalid info')
       {
         this.loginResponse = "ERROR INVALID USERNAME/PASSWORD";
         return alert("invalid! You may need to contact site manager!");
         
       }
-      else if (this.loginObj["isAdmin"] == true)
-      {
-        this.router.navigate(['/admin-view']);
-      }
+      
       else{
         console.log("route to auth view");
         this.router.navigate(['/auth-view']);
@@ -64,6 +65,11 @@ export class LoginComponent implements OnInit {
       
     });
 
+    //get user id and password to check if admin 
+  
+  
+  
+  
   }
 } 
   

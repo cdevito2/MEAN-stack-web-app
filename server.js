@@ -314,7 +314,7 @@ router.put("/admin/togglesong/:id",function(req,res)
 
     const token = req.headers.authorization;
     try{
-    const payload = jwt.verify(token[1], secret);
+    const payload = jwt.verify(token, secret);
 	console.log("JWT: ", JSON.stringify(payload));
     console.log("hi")
     Song.findByIdAndUpdate(req.params.id, {$set: req.body},function(err,song) {

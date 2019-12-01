@@ -153,9 +153,11 @@ export class HttpService {
         "dcma":dcma,
         "copyright":copyright
       })
-
-      
-    }
+  }
+  getPolicy()
+  {
+    return this.http.get("http://localhost:8080/api/open/policies")
+  }
 
 
 

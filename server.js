@@ -60,13 +60,7 @@ router.get('/', function(req, res) {
 router.get('/loginsuccess', function(req, res) {
     res.send('you loggin in');   
 });
-/*router.get('/open/songs',function(req,res,next){
-    Song.find({}).sort({numOfReviews:"desc"},function(err,songs) {
-        if(err)
-            return next(err);
-        res.send(songs);
-    }).limit(10)
-});*/
+
 
 //return a list of 10 songs ordered by average rating
 router.get('/open/songs',function(req,res,next){
@@ -105,7 +99,15 @@ router.get("/open/reviews/:id", function(req,res,next) {
     })
 
 });
-
+router.get('/open/policies', function(req, res) {
+    AdminPolicy.findOne({}).sort({ created: -1 }).exec(function(err, policy) {
+        if (err) 
+        {
+            res.json({error: 'Error retrieving policies.'});
+        } 
+        else {res.send(policy);};
+    });
+});
 //Return all songs which are marked as copyright violations
 router.get("/admin/copyright", function(req,res,next) {
     if (typeof req.headers.authorization === 'undefined')

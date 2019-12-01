@@ -12,6 +12,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {MatExpansionModule} from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegisterComponent } from './register/register.component';
+import { PoliciesComponent } from './policies/policies.component';
 
 
 
@@ -23,7 +24,8 @@ import { RegisterComponent } from './register/register.component';
     
     AuthViewComponent,
     AdminViewComponent,
-    RegisterComponent
+    RegisterComponent,
+    PoliciesComponent
   ],
   imports: [
     BrowserModule,

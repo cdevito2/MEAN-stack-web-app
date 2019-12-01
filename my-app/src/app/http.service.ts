@@ -138,6 +138,24 @@ export class HttpService {
         visible:trueOrFalse
       })
     }
+    updatePolicies(security,privacy,dcma,copyright)
+    {
+      console.log("here")
+      console.log(security);
+      console.log(privacy);
+      console.log(dcma);
+      console.log(copyright);
+      //return this.http.post("http:/localhost:8080/api/admin/update",{body})
+      return this.http.post("http://localhost:8080/api/admin/update",
+      {
+        "security":security,
+        "privacy":privacy,
+        "dcma":dcma,
+        "copyright":copyright
+      })
+
+      
+    }
 
 
 

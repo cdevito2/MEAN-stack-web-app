@@ -10,6 +10,8 @@ export class AdminViewComponent implements OnInit {
   userId:String="";
   userId2:String="";
   songId:String="";
+  
+
   constructor(private router:Router,private http:HttpService) { }
 
   ngOnInit() {
@@ -49,7 +51,37 @@ export class AdminViewComponent implements OnInit {
   }
 
 
+  updatePolicies(values)
+  {
+    var privacy = values.privacy.trim();
+    var security = values.security.trim();
+    var dcma =values.dcma.trim();
+    var copyright = values.copyright.trim();
+    
+    if((!(security.length)) || (!(privacy.length)) || (!(dcma.length)) || (!(copyright.length)))
+    {
+      return alert('fill out the form ')
+    }
+    console.log(security);
+    console.log(privacy);
+    console.log(dcma);
+    console.log(copyright);
+    this.http.updatePolicies(
+      
+      security,
+      privacy,
+      dcma,
+      copyright
+    ).subscribe(data => {
+      console.log(data);});
 
+  }
+
+
+  navigateAuth()
+  {
+    this.router.navigate(['/auth-view']);
+  }
   logout()
   {
     this.router.navigate(['/login']);

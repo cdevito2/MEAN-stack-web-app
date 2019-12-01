@@ -4,12 +4,13 @@ mongoose.connect(uri, {useNewUrlParser: true,}); //connect to my mongoose db
 var Song = require('./models/song'); //get the model of the schema for each 
 var Review = require('./models/review');
 var User = require("./models/user");
+var AdminPolicy = require('./models/AdminPolicy')
 //code grabbed from jagath parts.db
 const jwt = require('jsonwebtoken');
 //const secret = process.env.JWT_KEY;
 argon2i = require('argon2-ffi').argon2i
 crypto = require('crypto')
-
+var sanitize = require('sanitize-html');
 var session = require('express-session');
 var LocalStrategy = require('passport-local').Strategy
 
@@ -75,9 +76,6 @@ router.get('/open/songs',function(req,res,next){
             return next(err);
         return res.send(songs)
     })
-    
-    
-   
 });
 //search by keyword
 router.get("/open/search/{x}", function(req,res) {
@@ -209,6 +207,26 @@ router.post("/admin/copyright/:id",function(req,res)//Set or update copyright vi
  {
 
 });
+var stringSanitize = function(str) {
+	return sanitize(str, {allowedTags: []});
+};
+router.post('/admin/update', function(req, res) {
+    //add jwt stuff before 
+    var newAdminPol = new AdminPolicy({
+        dcma: stringSanitize(req.body.dcma),
+        copyright: stringSanitize(req.body.copyright),
+        security: stringSanitize(req.body.security),
+        privacy: stringSanitize(req.body.privacy),
+        created: new Date()
+    });
+    newAdminPol.save(function (err) {
+        if (err) {
+            res.send("error: "+err);
+        }
+    });
+    res.send("successful update of policies")
+});
+
 
 router.put("/admin/enable/:id",function(req,res)
 {

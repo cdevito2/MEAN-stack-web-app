@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
     if(!isValid)
     {
       this.loginResponse = "INVALID EMAIL FORMAT"
+      return alert("wrong email format")
     }
     else{
     this._http.loginUser(this.email,this.password).subscribe(data => {
@@ -45,7 +46,8 @@ export class LoginComponent implements OnInit {
       this.loginResponse = data.toString();
       if(this.loginResponse == 'you entered invalid info')
       {
-        this.loginResponse = "ERROR INVALID USERNAME/PASSWORD"
+        this.loginResponse = "ERROR INVALID USERNAME/PASSWORD";
+        return alert("invalid! You may need to contact site manager!");
         
       }
       else if (this.loginObj["isAdmin"] == true)

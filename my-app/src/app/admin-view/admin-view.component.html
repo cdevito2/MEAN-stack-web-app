@@ -1,4 +1,5 @@
 <p>admin-view works!</p>
+<button (click)= "navigateAuth()">GO TO AUTH USER PG</button>
 <h2>grant site manager access to user</h2>
 <hr>
 <div>
@@ -27,8 +28,36 @@
 <button (click)="deactivate()">DEACTIVATE</button>
 <button (click)="activate()">ACTIVATE</button>
 </div>
-<h2>access to dcma page</h2>
-<hr>
 <h2>find copyright violation songs</h2>
 <button (click)="findCopyrightSongs">FIND COPYRIGHT SONGS</button>
-<button (click)="logout()">LOGOUT</button>
+
+<hr>
+
+<form #f="ngForm" (ngSubmit)="updatePolicies(f.value)" accept-charset="utf-8">
+        <fieldset>
+            <legend>POLICIES</legend>
+            
+           <label>Privacy Policy</label>
+            <br>
+            <textarea name="privacy" ngModel></textarea>
+            <br>
+            <br>
+            <label>Security Policy</label>
+            <br>
+            <textarea name="security" ngModel></textarea>
+            <br>
+            <br>
+            <label>DMCA takedown/notice</label>
+            <br>
+            <textarea name="dcma" ngModel></textarea>
+            <br>
+            <br>
+            <label>infringment copyright</label>
+            <br>
+            <textarea name="copyright" ngModel></textarea>
+            <br>
+            <br>
+            <input type="submit" value="Update"/>
+        </fieldset>
+    </form>
+    <button (click)="logout()">LOGOUT</button>

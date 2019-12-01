@@ -29,8 +29,8 @@
 <button (click)="activate()">ACTIVATE</button>
 </div>
 <h2>find copyright violation songs</h2>
-<button (click)="findCopyrightSongs">FIND COPYRIGHT SONGS</button>
-
+<button (click)="findCopyrightSongs()">FIND COPYRIGHT SONGS</button>
+{{copyright | json}}
 <hr>
 
 <form #f="ngForm" (ngSubmit)="updatePolicies(f.value)" accept-charset="utf-8">

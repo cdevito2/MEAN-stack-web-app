@@ -10,7 +10,7 @@ export class AdminViewComponent implements OnInit {
   userId:String="";
   userId2:String="";
   songId:String="";
-  
+  copyright:Object;
 
   constructor(private router:Router,private http:HttpService) { }
 
@@ -76,7 +76,15 @@ export class AdminViewComponent implements OnInit {
       console.log(data);});
 
   }
-
+  findCopyrightSongs()
+  {
+    return this.http.copyrightSongs().subscribe(data => {
+      console.log("here")
+      console.log(data);
+      this.copyright = data;}
+      
+      );
+  }
 
   navigateAuth()
   {

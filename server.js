@@ -110,13 +110,13 @@ router.get('/open/policies', function(req, res) {
 });
 //Return all songs which are marked as copyright violations
 router.get("/admin/copyright", function(req,res,next) {
-    if (typeof req.headers.authorization === 'undefined')
+   /* if (typeof req.headers.authorization === 'undefined')
 		return res.status(401).send("Access denied. Missing Auth header.");
 
 	const token = req.headers.authorization.split(" ");
 	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
 		return res.status(401).send("Access denied. Missing Token.");
-    }
+    }*/
     try{
     Song.find({"copyrightValidation":true},function(err,result) {
         if (err)

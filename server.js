@@ -61,9 +61,9 @@ router.get('/loginsuccess', function(req, res) {
 });
 
 
-//return a list of 10 songs ordered by average rating
+//return a list of 10 songs ordered by numofReviews
 router.get('/open/songs',function(req,res,next){
-    Song.find({visible:true}).sort({numReviews:'desc'})
+    Song.find({visible:true}).sort({numOfReviews:-1})
     .exec(function(err,songs){
         if(err)
             return next(err);

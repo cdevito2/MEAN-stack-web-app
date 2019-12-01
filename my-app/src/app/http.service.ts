@@ -167,10 +167,6 @@ export class HttpService {
 
     return this.http.get("http://localhost:8080/api/admin/copyright",httpOptions)
   }
-
-
-
-
 }
 
 

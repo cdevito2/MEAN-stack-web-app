@@ -53,6 +53,7 @@ export class HttpService {
 
     createSong(title,artist,album,year,track,genre) //create a new song
     {
+      
       return this.http.post("http://localhost:8080/api/secure/song",
       {
         "title":title,
@@ -76,7 +77,7 @@ export class HttpService {
       {
         "reviewId":reviewId
         
-      }
+      },httpOptions
       )
     }
 
@@ -95,8 +96,11 @@ export class HttpService {
 
     loginUser(email,password)
     {
+      console.log("in login user")
+      console.log(localStorage.getItem('token'))
       console.log(email);
       console.log(password);
+      console.log(httpOptions)
       return this.http.post("http://localhost:8080/api/open/login",
       {
         "email":email,
@@ -108,6 +112,7 @@ export class HttpService {
     {
       console.log(email);
       console.log(password);
+      
       return this.http.post("http://localhost:8080/api/open/adminlogin",
       {
         "email":email,
@@ -120,7 +125,7 @@ export class HttpService {
       return this.http.put("http://localhost:8080/api/admin/enable/"+userId,
       {
         isAdmin:true
-      })
+      },httpOptions)
     }
 
     toggle(userId,trueOrFalse)
@@ -128,7 +133,7 @@ export class HttpService {
       return this.http.put("http://localhost:8080/api/admin/toggle/"+userId,
       {
         isActive:trueOrFalse
-      })
+      },httpOptions)
     }
     
     toggleSong(songId,trueOrFalse)
@@ -136,7 +141,7 @@ export class HttpService {
       return this.http.put("http://localhost:8080/api/admin/togglesong/"+songId,
       {
         visible:trueOrFalse
-      })
+      },httpOptions)
     }
     updatePolicies(security,privacy,dcma,copyright)
     {
@@ -152,14 +157,15 @@ export class HttpService {
         "privacy":privacy,
         "dcma":dcma,
         "copyright":copyright
-      })
+      },httpOptions)
   }
   getPolicy()
   {
     return this.http.get("http://localhost:8080/api/open/policies")
   }
   copyrightSongs(){
-    return this.http.get("http://localhost:8080/api/admin/copyright")
+
+    return this.http.get("http://localhost:8080/api/admin/copyright",httpOptions)
   }
 
 
@@ -174,7 +180,8 @@ export class HttpService {
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-Type':  'application/json',
-    'Accept': 'application/json'
+    'Accept': 'application/json',
+    'Authorization':JSON.parse(localStorage.getItem('token'))
     
   })
 };

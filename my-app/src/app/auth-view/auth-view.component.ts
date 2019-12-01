@@ -51,12 +51,17 @@ export class AuthViewComponent implements OnInit {
   }
 
   createSong(){ //this creates a song  and if fields entered also creates a review and adds review to song
+      if(!(this.title.length) || !(this.artist.length))
+      {
+        return alert("please enter in all fields")
+      }
+    
       this.http.createSong(this.title,this.artist,this.album,this.year,this.track,this.genre).subscribe(data => {
       this.song = data;
       console.log(this.userWhoReviewedAddSong);
       
       console.log(this.song.toString());//this returns the songId created 
-      if(this.userWhoReviewedAddSong != ""){
+      if(this.userWhoReviewedAddSong != "" && !(this.title.length) && !(this.artist.length) ){
       this.createSongAndReviewSameTime(this.song.toString(),this.ratingAddSong,this.userWhoReviewedAddSong,this.commentAddSong)
       }
       //now add reviewID to array in songs and increment number of reviews by 1
@@ -66,6 +71,7 @@ export class AuthViewComponent implements OnInit {
       
     }
 
+    //need to add create song and review same time
     createSongAndReviewSameTime(songId,ratingAddSong,userWhoReviewedAddSong,commentAddSong)
     {
       return this.http.makeReview(songId,ratingAddSong,userWhoReviewedAddSong,commentAddSong).subscribe(data => {

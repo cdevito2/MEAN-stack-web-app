@@ -13,6 +13,7 @@ export class RegisterComponent implements OnInit {
   private newPassword:String="";
   private response:String="";
   private registerResponse:String="";
+  private token:String="";
   ngOnInit() {
   }
   validateEmail(email) 
@@ -32,6 +33,10 @@ export class RegisterComponent implements OnInit {
     else{
       this._http.registerUser(this.newEmail,this.newPassword).subscribe(data => {
         console.log(data);
+        this.token = data;
+        localStorage.setItem('token',data)
+        console.log("localstorage")
+        console.log(localStorage.getItem('token'))
         this.response = data.toString();
         if (this.response == "email already exists")
       {

@@ -5,29 +5,28 @@ var Song = require('./models/song'); //get the model of the schema for each
 var Review = require('./models/review');
 var User = require("./models/user");
 var AdminPolicy = require('./models/AdminPolicy')
-//code grabbed from jagath parts.db
 const jwt = require('jsonwebtoken');
-//const secret = process.env.JWT_KEY;
 argon2i = require('argon2-ffi').argon2i
 crypto = require('crypto')
 var sanitize = require('sanitize-html');
 var session = require('express-session');
 var LocalStrategy = require('passport-local').Strategy
-
 const passport = require('passport');
 console.log('Connected to the database (mongoose)');
-
 const express = require('express');
 const bodyParser = require('body-parser');
 var cors = require('cors')
 var app = express()
+var secret = "hello"
+
+
 
 app.use(cors())
 //may have to put this lower
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(session({
-    secret:"sdfnsdofindsonds",
+    secret:"hello",
     cookie:{secure:true},
     saveUninitialized:true,
     resave:false
@@ -64,7 +63,7 @@ router.get('/loginsuccess', function(req, res) {
 
 //return a list of 10 songs ordered by average rating
 router.get('/open/songs',function(req,res,next){
-    Song.find({visible:true})//have to add .sort(avgrating highest)
+    Song.find({visible:true}).sort({numReviews:'desc'})
     .exec(function(err,songs){
         if(err)
             return next(err);
@@ -110,13 +109,13 @@ router.get('/open/policies', function(req, res) {
 });
 //Return all songs which are marked as copyright violations
 router.get("/admin/copyright", function(req,res,next) {
-   /* if (typeof req.headers.authorization === 'undefined')
+   if (typeof req.headers.authorization === 'undefined')
 		return res.status(401).send("Access denied. Missing Auth header.");
 
 	const token = req.headers.authorization.split(" ");
 	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
 		return res.status(401).send("Access denied. Missing Token.");
-    }*/
+    }
     try{
     Song.find({"copyrightValidation":true},function(err,result) {
         if (err)
@@ -124,24 +123,24 @@ router.get("/admin/copyright", function(req,res,next) {
         res.send(result)
     })
     }
-        catch(ex){
-                return res.send("error finding from songdb");
-            }
+    catch(ex){
+        return res.status(401).send("Access denied. Invalid token.");
+    }
 });
 
 //Create a new review for the song with the given ID based on JSON array provided in the body.
 router.put("/secure/add-review/:id",function(req,res) { //create review
-    /*if (typeof req.headers.authorization === 'undefined')
+    if (typeof req.headers.authorization === 'undefined')
 		return res.status(401).send("Access denied. Missing Auth header.");
 
 	const token = req.headers.authorization.split(" ");
 	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
 		return res.status(401).send("Access denied. Missing Token.");
-    }*/
+    }
     try{
 
-    //const payload = jwt.verify(token[1], secret);
-	//console.log("JWT: ", JSON.stringify(payload));
+    const payload = jwt.verify(token[1], secret);
+	console.log("JWT: ", JSON.stringify(payload));
 
     var review = new Review({
         songId:req.body.songId,
@@ -157,7 +156,8 @@ router.put("/secure/add-review/:id",function(req,res) { //create review
         //res.header('Access-Control-Allow-Origin',"*");
         res.send(review._id);
     })
-    }catch(ex){
+    }
+    catch(ex){
         return res.status(401).send("Access denied. Invalid token.");
     }
     //res.send("updated item");
@@ -166,8 +166,22 @@ router.put("/secure/add-review/:id",function(req,res) { //create review
 
 });
 router.post("/secure/song",function(req,res) { //save the JSON array for a song in the database and return the ID
+    if (typeof req.headers.authorization === 'undefined')
+		return res.status(401).send("Access denied. Missing Auth header.");
+
+    const token = req.headers.authorization;
+    console.log("auth header: ")
+    
+    console.log(req.headers.authorization)
+	/*if (! token[0].startsWith('"\\"Bearer')) { // Check first element. Must be "Bearer"
+		return res.status(401).send("Access denied. Missing Token.");
+    }*/
     
     try{
+    
+    console.log(jwt.verify(token, secret));
+    const payload = jwt.verify(token, secret);
+    console.log("JWT: ", JSON.stringify(payload));  
     var song = new Song({
         title:req.body.title,
         artist:req.body.artist,
@@ -184,15 +198,22 @@ router.post("/secure/song",function(req,res) { //save the JSON array for a song 
         //res.send(song);
     })
     res.send(song._id);
-}
-catch(ex){
-    res.send("error adding song");
-}
+    }
+    catch(ex){
+        return res.status(401).send("Access denied. Invalid token.")
+    }
 });
 router.put('/secure/song/:id',function(req,res) { //update the record of the given song ID with JSON array of properties sent in the body.
-    
+    if (typeof req.headers.authorization === 'undefined')
+		return res.status(401).send("Access denied. Missing Auth header.");
+
+	const token = req.headers.authorization.split(" ");
+	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
+		return res.status(401).send("Access denied. Missing Token.");
+    }
     try{
-       
+    const payload = jwt.verify(token[1], secret);
+    console.log("JWT: ", JSON.stringify(payload));
     Review.findByIdAndUpdate(req.params.id, {$set: req.body},function(err) {
         if (err)
             res.send("error: "+err);
@@ -201,7 +222,7 @@ router.put('/secure/song/:id',function(req,res) { //update the record of the giv
     }
     catch(ex)
     {
-        res.send(ex);
+        return res.status(401).send("Access denied. Invalid token.")
     }
 });
 
@@ -209,11 +230,24 @@ router.post("/admin/copyright/:id",function(req,res)//Set or update copyright vi
  {
 
 });
+
+
+
 var stringSanitize = function(str) {
 	return sanitize(str, {allowedTags: []});
 };
 router.post('/admin/update', function(req, res) {
     //add jwt stuff before 
+    if (typeof req.headers.authorization === 'undefined')
+    return res.status(401).send("Access denied. Missing Auth header.");
+
+    const token = req.headers.authorization.split(" ");
+    if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
+        return res.status(401).send("Access denied. Missing Token.");
+    }
+    try{
+    const payload = jwt.verify(token[1], secret);
+	console.log("JWT: ", JSON.stringify(payload));
     var newAdminPol = new AdminPolicy({
         dcma: stringSanitize(req.body.dcma),
         copyright: stringSanitize(req.body.copyright),
@@ -227,11 +261,26 @@ router.post('/admin/update', function(req, res) {
         }
     });
     res.send("successful update of policies")
+    }
+    catch(ex)
+    {
+        return res.status(401).send("Access denied. Invalid token.");
+    }
 });
 
 
 router.put("/admin/enable/:id",function(req,res)
 {
+    if (typeof req.headers.authorization === 'undefined')
+		return res.status(401).send("Access denied. Missing Auth header.");
+
+	    const token = req.headers.authorization.split(" ");
+	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
+		return res.status(401).send("Access denied. Missing Token.");
+    }
+    try{
+    const payload = jwt.verify(token[1], secret);
+	console.log("JWT: ", JSON.stringify(payload));
     console.log("hi")
     User.findByIdAndUpdate(req.params.id, {$set: req.body},function(err,user) {
         if (err)
@@ -240,11 +289,23 @@ router.put("/admin/enable/:id",function(req,res)
     })
 
      res.send(JSON.stringify("updated!"));
-    
+    }
+    catch(ex)
+    {
+        return res.status(401).send("Access denied. Invalid token.");
+    }  
 })
 
 router.put("/admin/toggle/:id",function(req,res)
 {
+    if (typeof req.headers.authorization === 'undefined')
+		return res.status(401).send("Access denied. Missing Auth header.");
+
+	    const token = req.headers.authorization.split(" ");
+	    if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
+		return res.status(401).send("Access denied. Missing Token.");
+    }
+    try{
     console.log("hi")
     User.findByIdAndUpdate(req.params.id, {$set: req.body},function(err,user) {
         if (err)
@@ -253,11 +314,26 @@ router.put("/admin/toggle/:id",function(req,res)
     })
 
      res.send(JSON.stringify("updated!"));
-    
+    }
+    catch(ex)
+    {
+        return res.status(401).send("Access denied. Invalid token.");
+    }  
 })
 
 router.put("/admin/togglesong/:id",function(req,res)
 {
+    if (typeof req.headers.authorization === 'undefined')
+		return res.status(401).send("Access denied. Missing Auth header.");
+
+	    const token = req.headers.authorization.split(" ");
+    if (token[0].startsWith('Bearer')) {
+            // Remove Bearer from string
+        token = token.slice(7, token.length);
+    }
+    try{
+    const payload = jwt.verify(token[1], secret);
+	console.log("JWT: ", JSON.stringify(payload));
     console.log("hi")
     Song.findByIdAndUpdate(req.params.id, {$set: req.body},function(err,song) {
         if (err)
@@ -266,62 +342,26 @@ router.put("/admin/togglesong/:id",function(req,res)
     })
 
      res.send(JSON.stringify("updated!"));
+    }
+    catch(ex)
+    {
+        return res.status(401).send("Access denied. Invalid token.");
+    }
     
 })
 
 
-
-
-
-
-/*router.post("/secure/user",function(req,res) {
-    if (typeof req.headers.authorization === 'undefined')
-		return res.status(401).send("Access denied. Missing Auth header.");
-
-	const token = req.headers.authorization.split(" ");
-	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
-		return res.status(401).send("Access denied. Missing Token.");
-    }
-    try{
-
-    //have to hash password
-    const payload = jwt.verify(token[1], secret);
-    console.log("JWT: ", JSON.stringify(payload));
-    //hash here!
-    var user = new User({
-        password:req.body.password,
-        email:req.body.email,
-        isAdmin:req.body.isAdmin,
-        isActive:req.body.isActive
-        
-    });
-    user.save(function (err) {
-        if (err) {
-            res.send("error: "+err);
-        }
-        res.send(user);
-    })
-    }
-    catch(ex)
-    {
-        res.send("error creating user")
-    }
-});*/
-
 router.post("/open/register",function(req,res) { //replacing the above route
-    //it is open because the person registering doesnt have the jwt as they dont have an account
-    //create acc and give them the jwt
+    
     
     const { email, password } = req.body;
     let errors = [];
     if (!email || !password) {
-        //errors.push({ msg: 'Please enter all fields' });
+        
         res.send("enter all fields");
       }
     
-    /*if (errors.length > 0) {
-        res.send("erros man");
-      }*/
+   
     else
     {
         User.findOne({ email: email }).then(user => {
@@ -348,9 +388,15 @@ router.post("/open/register",function(req,res) { //replacing the above route
                         }
                       });
                     });
-                
+                    ;
                 });
-                res.send(newUser); 
+                     // make up a payload for JWT
+                let payload = newUser.toJSON()
+		        let token = jwt.sign(payload, secret);		// make a token
+		        res.json(token);							// send it
+		        console.log('token: ' + token);
+
+                
                
             }    
         });
@@ -359,7 +405,11 @@ router.post("/open/register",function(req,res) { //replacing the above route
 }); //end of create user fcn
 
 router.post('/open/login',passport.authenticate('local',{failureRedirect: '/api/open/login/error'}),(req,res)=>{
-    res.send(JSON.stringify(req.user));
+    let payload = req.user.toJSON()
+	let token = jwt.sign(payload, secret);		// make a token
+    res.json(token);
+    							// send it
+	console.log('token: ' + token);
 })
 
 router.post('/open/adminlogin',passport.authenticate('local',{failureRedirect: '/api/open/login/error'}),(req,res)=>{
@@ -374,6 +424,8 @@ router.get("/open/login/error",function(req,res){
 //for auth user(not admin)
 passport.use(new LocalStrategy({ usernameField: 'email', passwordField: 'password' }, (email, password, done) => {
         // Match user
+        
+        
         console.log("in passport local strategy")
        User.findOne({email:email}, function(err,user){
            if(err){

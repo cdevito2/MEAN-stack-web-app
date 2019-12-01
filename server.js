@@ -109,13 +109,10 @@ router.get('/open/policies', function(req, res) {
 });
 //Return all songs which are marked as copyright violations
 router.get("/admin/copyright", function(req,res,next) {
-   if (typeof req.headers.authorization === 'undefined')
-		return res.status(401).send("Access denied. Missing Auth header.");
+    if (typeof req.headers.authorization === 'undefined')
+    return res.status(401).send("Access denied. Missing Auth header.");
 
-	const token = req.headers.authorization.split(" ");
-	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
-		return res.status(401).send("Access denied. Missing Token.");
-    }
+    const token = req.headers.authorization;
     try{
     Song.find({"copyrightValidation":true},function(err,result) {
         if (err)
@@ -133,13 +130,12 @@ router.put("/secure/add-review/:id",function(req,res) { //create review
     if (typeof req.headers.authorization === 'undefined')
 		return res.status(401).send("Access denied. Missing Auth header.");
 
-	const token = req.headers.authorization.split(" ");
-	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
-		return res.status(401).send("Access denied. Missing Token.");
-    }
+    const token = req.headers.authorization;
+    console.log("header: ")
+    console.log(token)
     try{
 
-    const payload = jwt.verify(token[1], secret);
+    const payload = jwt.verify(token, secret);
 	console.log("JWT: ", JSON.stringify(payload));
 
     var review = new Review({
@@ -204,15 +200,14 @@ router.post("/secure/song",function(req,res) { //save the JSON array for a song 
     }
 });
 router.put('/secure/song/:id',function(req,res) { //update the record of the given song ID with JSON array of properties sent in the body.
-    if (typeof req.headers.authorization === 'undefined')
+   
+
+        if (typeof req.headers.authorization === 'undefined')
 		return res.status(401).send("Access denied. Missing Auth header.");
 
-	const token = req.headers.authorization.split(" ");
-	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
-		return res.status(401).send("Access denied. Missing Token.");
-    }
+    const token = req.headers.authorization;
     try{
-    const payload = jwt.verify(token[1], secret);
+    const payload = jwt.verify(token, secret);
     console.log("JWT: ", JSON.stringify(payload));
     Review.findByIdAndUpdate(req.params.id, {$set: req.body},function(err) {
         if (err)
@@ -239,14 +234,11 @@ var stringSanitize = function(str) {
 router.post('/admin/update', function(req, res) {
     //add jwt stuff before 
     if (typeof req.headers.authorization === 'undefined')
-    return res.status(401).send("Access denied. Missing Auth header.");
+		return res.status(401).send("Access denied. Missing Auth header.");
 
-    const token = req.headers.authorization.split(" ");
-    if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
-        return res.status(401).send("Access denied. Missing Token.");
-    }
+    const token = req.headers.authorization;
     try{
-    const payload = jwt.verify(token[1], secret);
+    const payload = jwt.verify(token, secret);
 	console.log("JWT: ", JSON.stringify(payload));
     var newAdminPol = new AdminPolicy({
         dcma: stringSanitize(req.body.dcma),
@@ -274,12 +266,9 @@ router.put("/admin/enable/:id",function(req,res)
     if (typeof req.headers.authorization === 'undefined')
 		return res.status(401).send("Access denied. Missing Auth header.");
 
-	    const token = req.headers.authorization.split(" ");
-	if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
-		return res.status(401).send("Access denied. Missing Token.");
-    }
+    const token = req.headers.authorization;
     try{
-    const payload = jwt.verify(token[1], secret);
+    const payload = jwt.verify(token, secret);
 	console.log("JWT: ", JSON.stringify(payload));
     console.log("hi")
     User.findByIdAndUpdate(req.params.id, {$set: req.body},function(err,user) {
@@ -301,10 +290,7 @@ router.put("/admin/toggle/:id",function(req,res)
     if (typeof req.headers.authorization === 'undefined')
 		return res.status(401).send("Access denied. Missing Auth header.");
 
-	    const token = req.headers.authorization.split(" ");
-	    if (! token[0].startsWith("Bearer")) { // Check first element. Must be "Bearer"
-		return res.status(401).send("Access denied. Missing Token.");
-    }
+    const token = req.headers.authorization;
     try{
     console.log("hi")
     User.findByIdAndUpdate(req.params.id, {$set: req.body},function(err,user) {
@@ -326,11 +312,7 @@ router.put("/admin/togglesong/:id",function(req,res)
     if (typeof req.headers.authorization === 'undefined')
 		return res.status(401).send("Access denied. Missing Auth header.");
 
-	    const token = req.headers.authorization.split(" ");
-    if (token[0].startsWith('Bearer')) {
-            // Remove Bearer from string
-        token = token.slice(7, token.length);
-    }
+    const token = req.headers.authorization;
     try{
     const payload = jwt.verify(token[1], secret);
 	console.log("JWT: ", JSON.stringify(payload));

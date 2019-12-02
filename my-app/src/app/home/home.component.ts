@@ -56,37 +56,7 @@ export class HomeComponent implements OnInit {
   });
 }
      
-      //recentReview is an array of reviewId's stored in a song
-     //i need to define a field in review that is the exact time of creation
-     //then for each song in this.songs i call the function get recent review
-     //this returns the most recent review for a song
-     //i somehow convert the this.songs[song] and the returned result to string, add them, then
-     //convert back to a json object by json.parse()
-        
-      /*this._http.getReviews(this.songIdforReview).subscribe(data => {
-         console.log("data below:");
-          console.log(JSON.stringify(data));
-          console.log(JSON.stringify(data)+ JSON.stringify(this.songs[song]))
-          this.songs[song] = JSON.parse(JSON.stringify(data)+ JSON.stringify(this.songs[song]));
-          //this.result = JSON.stringify(this.songs+JSON.stringify(data));
-          //this.songs = JSON.parse(this.result.toString());
-          //console.log(this.songs.toString()+JSON.stringify(data));
-          //console.log(this.result);
-        });
-      
-      
-      }
-    });*/
-  
-    /*getRecent()
-    {
-      for (var songs in this.songs)
-      {
-
-      }
-    }*/
-  
-  calculateAverage(songId)
+      calculateAverage(songId)
   {
     this._http.getReviews(songId).subscribe(data => {
       this.reviews = data;
@@ -105,7 +75,7 @@ export class HomeComponent implements OnInit {
         console.log(this.average)
         this.updateSongAvg(this.average,totalReviews,this.reviews[review].songId)
         //update song with its average rating
-        //return this.
+        
       }
       
     });

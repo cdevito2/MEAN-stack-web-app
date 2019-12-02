@@ -26,22 +26,22 @@ export class HttpService {
 
     getSongs()//get list of songs
     {
-      return this.http.get("http://localhost:8080/api/open/songs");
+      return this.http.get("/api/open/songs");
     }
 
     getReviews(nm) //get reviews for specific song
     {
-      return this.http.get("http://localhost:8080/api/open/reviews/"+nm)
+      return this.http.get("/api/open/reviews/"+nm)
     }
 
     getRecentReview(nm) //get reviews for specific song
     {
-      return this.http.get("http://localhost:8080/api/open/recentreviews/"+nm)
+      return this.http.get("/api/open/recentreviews/"+nm)
     }
 
     makeReview(id,rating,user,comment) //add a review to song
     {
-      return this.http.put("http://localhost:8080/api/secure/add-review/"+id,
+      return this.http.put("/api/secure/add-review/"+id,
       {
         "songId":id,
         "rating":rating,
@@ -54,7 +54,7 @@ export class HttpService {
     createSong(title,artist,album,year,track,genre) //create a new song
     {
       
-      return this.http.post("http://localhost:8080/api/secure/song",
+      return this.http.post("/api/secure/song",
       {
         "title":title,
         "artist":artist,
@@ -73,7 +73,7 @@ export class HttpService {
     {
       
       //update the record of the given song ID with JSON array of properties sent in the body.
-      return this.http.put("http://localhost:8080/api/secure/song/"+songId,
+      return this.http.put("/api/secure/song/"+songId,
       {
         "reviewId":reviewId
         
@@ -87,7 +87,7 @@ export class HttpService {
     {
       console.log(email);
       console.log(password);
-      return this.http.post("http://localhost:8080/api/open/register",
+      return this.http.post("/api/open/register",
       {
         "email":email,
         "password": password
@@ -101,7 +101,7 @@ export class HttpService {
       console.log(email);
       console.log(password);
       console.log(httpOptions)
-      return this.http.post("http://localhost:8080/api/open/login",
+      return this.http.post("/api/open/login",
       {
         "email":email,
         "password": password
@@ -113,7 +113,7 @@ export class HttpService {
       console.log(email);
       console.log(password);
       
-      return this.http.post("http://localhost:8080/api/open/adminlogin",
+      return this.http.post("/api/open/adminlogin",
       {
         "email":email,
         "password": password
@@ -122,7 +122,7 @@ export class HttpService {
     
     enableUserAdmin(userId)
     {
-      return this.http.put("http://localhost:8080/api/admin/enable/"+userId,
+      return this.http.put("/api/admin/enable/"+userId,
       {
         isAdmin:true
       },httpOptions)
@@ -130,7 +130,7 @@ export class HttpService {
 
     toggle(userId,trueOrFalse)
     {
-      return this.http.put("http://localhost:8080/api/admin/toggle/"+userId,
+      return this.http.put("/api/admin/toggle/"+userId,
       {
         isActive:trueOrFalse
       },httpOptions)
@@ -138,7 +138,7 @@ export class HttpService {
     
     toggleSong(songId,trueOrFalse)
     {
-      return this.http.put("http://localhost:8080/api/admin/togglesong/"+songId,
+      return this.http.put("/api/admin/togglesong/"+songId,
       {
         visible:trueOrFalse
       },httpOptions)
@@ -151,7 +151,7 @@ export class HttpService {
       console.log(dcma);
       console.log(copyright);
       //return this.http.post("http:/localhost:8080/api/admin/update",{body})
-      return this.http.post("http://localhost:8080/api/admin/update",
+      return this.http.post("/api/admin/update",
       {
         "security":security,
         "privacy":privacy,
@@ -161,18 +161,18 @@ export class HttpService {
   }
   getPolicy()
   {
-    return this.http.get("http://localhost:8080/api/open/policies")
+    return this.http.get("/api/open/policies")
   }
   copyrightSongs(){
 
-    return this.http.get("http://localhost:8080/api/admin/copyright",httpOptions)
+    return this.http.get("/api/admin/copyright",httpOptions)
   }
 
   updateSongAvg(avg,totalreviews,song){
     console.log(avg)
     console.log(totalreviews)
     console.log(song)
-    return this.http.put("http://localhost:8080/api/open/song/"+song,
+    return this.http.put("/api/open/song/"+song,
     {
       avgRating:avg,
       numOfReviews:totalreviews

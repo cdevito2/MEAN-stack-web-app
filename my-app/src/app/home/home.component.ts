@@ -3,6 +3,8 @@ import {HttpService} from "../http.service";
 import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
 import {MatExpansionModule/*, MatAccordion*/} from '@angular/material';
 
+import { Schema } from 'inspector';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -22,6 +24,9 @@ export class HomeComponent implements OnInit {
   test:Object;
   //songName:String = "";
   average:Number=0;
+  keyword:String="";
+  songs3:Object;
+  searchResult:Object;
   
   ngOnInit() {
     this._http.getSongs().subscribe(data => {
@@ -111,5 +116,19 @@ export class HomeComponent implements OnInit {
     
   });
 }
+
+
+keywordSearch()
+{
+  return this._http.songSearch(this.keyword).subscribe(data => {
+   console.log(data);
+   this.searchResult = data;
+    
+  });
+  
+}
+
+
+
 
 }

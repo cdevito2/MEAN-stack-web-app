@@ -5,26 +5,29 @@ var Schema = mongoose.Schema;
 var SongSchema = new Schema({
     title: {
         type: String, 
-        required: true, max: 30
+        required: true, max: 30,
+        text:true
         
     },
     artist: {
         type: String,
-        required: true, max: 30
-        
+        required: true, max: 30,
+        text:true
     },
 	album: {
 	    type: String , 
-	    required: true, max: 30
-	    
+	    required: true, max: 30,
+	    text:true
     },
     year: {
         type: Number,
-        required:true, max : 2019
+        required:true, max : 2019,
+        text:true
     },
     track: {
 	    type :Number,
-	    required: true, min: 0, max: 20
+        required: true, min: 0, max: 20,
+        text:true
     },
     visible: {
         type:Boolean,
@@ -32,7 +35,8 @@ var SongSchema = new Schema({
     },
     genre:{
         type:String,
-        requierd:true
+        requierd:true,
+        text:true
     },
     copyrightValidation:{
         type:Boolean,

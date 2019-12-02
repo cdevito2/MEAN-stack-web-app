@@ -70,12 +70,19 @@ router.get('/open/songs',function(req,res,next){
         return res.send(songs)
     })
 });
-//search by keyword
-router.get("/open/search/{x}", function(req,res) {
-    json.parse(x);
-    
-});
 
+//search by keyword-need to return each visible song for it
+
+Song.collection.dropIndex("title_text");
+Song.collection.createIndex({"title":"text", "track": "text","album": "text","year": "text","genre": "text"})
+router.get('/open/search/:keyword',function(req,res,next){
+    Song.find( { $text: { $search: req.params.keyword } }).exec(function(err,songs){
+        console.log(songs)
+        if(err)
+            return next(err);
+        return res.send(songs)
+    })
+});
 
 //return most recent review for a given song ID.
 router.get("/open/recentreviews/:id", function(req,res,next) {

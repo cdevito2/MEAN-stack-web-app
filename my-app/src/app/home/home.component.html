@@ -55,4 +55,18 @@
          
      </ul>
 </div>
+
+
+
+<div class = "keywordSearch">
+  <h2>KEYWORD SEARCH</h2>
+  <input type="text" [(ngModel)]= "keyword" placeHolder = "ENTER KEYWORD">
+  <button id="findReview" (click)="keywordSearch()" >KEYWORD SEARCH</button>
+  <ul *ngIf = "searchResult">
+    
+     <li *ngFor="let x of searchResult">
+       {{x | json}}
+    </li>
+  </ul>
+</div>
     

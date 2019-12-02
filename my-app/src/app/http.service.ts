@@ -28,6 +28,10 @@ export class HttpService {
     {
       return this.http.get("/api/open/songs");
     }
+    songSearch(keyword)//get list of songs
+    {
+      return this.http.get("/api/open/search/"+keyword);
+    }
 
     getReviews(nm) //get reviews for specific song
     {

@@ -167,6 +167,20 @@ export class HttpService {
 
     return this.http.get("http://localhost:8080/api/admin/copyright",httpOptions)
   }
+
+  updateSongAvg(avg,totalreviews,song){
+    console.log(avg)
+    console.log(totalreviews)
+    console.log(song)
+    return this.http.put("http://localhost:8080/api/open/song/"+song,
+    {
+      avgRating:avg,
+      numOfReviews:totalreviews
+    })
+  }
+
+
+
 }
 
 

@@ -83,6 +83,7 @@ router.get("/open/recentreviews/:id", function(req,res,next) {
     .exec(function(err,reviews){
         if(err)
             res.send(err);
+        
         return res.send(JSON.stringify(reviews))
     })
 });
@@ -221,6 +222,17 @@ router.put('/secure/song/:id',function(req,res) { //update the record of the giv
     }
 });
 
+router.put('/open/song/:id',function(req,res) { //update the record of the given song ID with JSON array of properties sent in the body.
+Song.findByIdAndUpdate(req.params.id, {$set: req.body},function(err,user) {
+    if (err)
+        res.send("error: "+err);
+    console.log(user)
+})
+
+ res.send("updated item");
+});
+
+
 router.post("/admin/copyright/:id",function(req,res)//Set or update copyright violation attributes for a given song ID. JSON array with new values is provided in the body.
  {
 
@@ -334,19 +346,13 @@ router.put("/admin/togglesong/:id",function(req,res)
 
 
 router.post("/open/register",function(req,res) { //replacing the above route
-    
-    
     const { email, password } = req.body;
-    let errors = [];
     if (!email || !password) {
-        
         res.send("enter all fields");
       }
-    
-   
     else
     {
-        User.findOne({ email: email }).then(user => {
+    User.findOne({ email: email }).then(user => {
             if (user) 
             {
               res.send("email already exists");

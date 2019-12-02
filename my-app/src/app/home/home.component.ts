@@ -12,6 +12,7 @@ export class HomeComponent implements OnInit {
   id : String = "";
   constructor(private _http:HttpService) { }
   songs:Object;
+  songs2:Object;
   reviews:Object;
   specificSong:Object;
   recentReview:String="";
@@ -20,7 +21,21 @@ export class HomeComponent implements OnInit {
   x:String = "";
   test:Object;
   //songName:String = "";
+  average:Number=0;
+  
   ngOnInit() {
+    this._http.getSongs().subscribe(data => {
+      this.songs2 = data; 
+      for (var song2 in this.songs2)
+      {
+      this.recentReview = this.songs2[song2].reviewId;
+      this.songIdforReview = this.songs2[song2]._id;
+     
+      //this.getRecentReview(this.songIdforReview);
+      var avg = this.calculateAverage(this.songIdforReview);
+      
+    }
+  });
   
   }
 
@@ -34,7 +49,9 @@ export class HomeComponent implements OnInit {
       this.songIdforReview = this.songs[song]._id;
      
       this.getRecentReview(this.songIdforReview);
-    
+      //var average = this.calculateAverage(this.songIdforReview);
+      //console.log("get songs avg")
+      //console.log(average)
     }
   });
 }
@@ -69,6 +86,31 @@ export class HomeComponent implements OnInit {
       }
     }*/
   
+  calculateAverage(songId)
+  {
+    this._http.getReviews(songId).subscribe(data => {
+      this.reviews = data;
+      var average =0;
+      var totalReviews =0;
+      var totalRating=0;
+      console.log(data)
+      for (var review in this.reviews)
+      {
+        totalReviews = totalReviews + 1
+        console.log(totalReviews);
+        totalRating = totalRating + this.reviews[review].rating;
+        console.log(totalRating);
+        this.average = totalRating / totalReviews;
+        console.log("avg")
+        console.log(this.average)
+        this.updateSongAvg(this.average,totalReviews,this.reviews[review].songId)
+        //update song with its average rating
+        //return this.
+      }
+      
+    });
+  }
+
   getRecentReview(songId)
   {
     return this._http.getRecentReview(songId).subscribe(data => {
@@ -88,5 +130,16 @@ export class HomeComponent implements OnInit {
       
     });
   }
+
+
+  updateSongAvg(avg,totalreviews,song)
+{
+  console.log("updating")
+  return this._http.updateSongAvg(avg,totalreviews,song).subscribe(data => {
+   
+    console.log(data);
+    
+  });
+}
 
 }

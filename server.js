@@ -10,7 +10,7 @@ argon2i = require('argon2-ffi').argon2i
 crypto = require('crypto')
 var sanitize = require('sanitize-html');
 var session = require('express-session');
-var LocalStrategy = require('passport-local').Strategy
+var LocalStrategy = require('passport-local').Strategy 
 const passport = require('passport');
 console.log('Connected to the database (mongoose)');
 const express = require('express');
@@ -52,16 +52,16 @@ app.use(function(req,res,next) {
 app.listen(port);
 console.log('Magic happens on port ' + port);
 
-router.get('/', function(req, res) {
+router.get('/', function(req, res) { //base api call
     res.send('hooray! welcome to our api!' );   
 });
 
-router.get('/loginsuccess', function(req, res) {
+router.get('/loginsuccess', function(req, res) { //login success gets routed here
     res.send('you loggin in');   
 });
 
 
-//return a list of 10 songs ordered by numofReviews
+//return a list of 10 songs ordered by numofReviews in descending order
 router.get('/open/songs',function(req,res,next){
     Song.find({visible:true}).sort({numOfReviews:-1})
     .exec(function(err,songs){
@@ -73,11 +73,12 @@ router.get('/open/songs',function(req,res,next){
 
 //search by keyword-need to return each visible song for it
 
+//Song.collection.dropIndex("title_text_track_text_album_text_year_text_genre_text");
 Song.collection.dropIndex("title_text");
 Song.collection.createIndex({"title":"text", "track": "text","album": "text","year": "text","genre": "text"})
-router.get('/open/search/:keyword',function(req,res,next){
+router.get('/open/search/:keyword',function(req,res,next){ //index created for keyword search
     Song.find( { $text: { $search: req.params.keyword } }).exec(function(err,songs){
-        console.log(songs)
+        console.log(songs) 
         if(err)
             return next(err);
         return res.send(songs)
@@ -106,6 +107,7 @@ router.get("/open/reviews/:id", function(req,res,next) {
     })
 
 });
+//return all policies 
 router.get('/open/policies', function(req, res) {
     AdminPolicy.findOne({}).sort({ created: -1 }).exec(function(err, policy) {
         if (err) 
@@ -177,9 +179,7 @@ router.post("/secure/song",function(req,res) { //save the JSON array for a song 
     console.log("auth header: ")
     
     console.log(req.headers.authorization)
-	/*if (! token[0].startsWith('"\\"Bearer')) { // Check first element. Must be "Bearer"
-		return res.status(401).send("Access denied. Missing Token.");
-    }*/
+	
     
     try{
     
@@ -207,6 +207,7 @@ router.post("/secure/song",function(req,res) { //save the JSON array for a song 
         return res.status(401).send("Access denied. Invalid token.")
     }
 });
+
 router.put('/secure/song/:id',function(req,res) { //update the record of the given song ID with JSON array of properties sent in the body.
    
 
@@ -242,7 +243,7 @@ Song.findByIdAndUpdate(req.params.id, {$set: req.body},function(err,user) {
 
 router.post("/admin/copyright/:id",function(req,res)//Set or update copyright violation attributes for a given song ID. JSON array with new values is provided in the body.
  {
-
+ //ran out of time to finish this route
 });
 
 
@@ -250,7 +251,7 @@ router.post("/admin/copyright/:id",function(req,res)//Set or update copyright vi
 var stringSanitize = function(str) {
 	return sanitize(str, {allowedTags: []});
 };
-router.post('/admin/update', function(req, res) {
+router.post('/admin/update', function(req, res) { //update the policies
     //add jwt stuff before 
     if (typeof req.headers.authorization === 'undefined')
 		return res.status(401).send("Access denied. Missing Auth header.");
@@ -279,7 +280,7 @@ router.post('/admin/update', function(req, res) {
     }
 });
 
-
+ //enable user 
 router.put("/admin/enable/:id",function(req,res)
 {
     if (typeof req.headers.authorization === 'undefined')
@@ -303,7 +304,7 @@ router.put("/admin/enable/:id",function(req,res)
         return res.status(401).send("Access denied. Invalid token.");
     }  
 })
-
+//togle user from deactivated/activated 
 router.put("/admin/toggle/:id",function(req,res)
 {
     if (typeof req.headers.authorization === 'undefined')
@@ -325,7 +326,7 @@ router.put("/admin/toggle/:id",function(req,res)
         return res.status(401).send("Access denied. Invalid token.");
     }  
 })
-
+//toggle song from visible to not 
 router.put("/admin/togglesong/:id",function(req,res)
 {
     if (typeof req.headers.authorization === 'undefined')
@@ -351,8 +352,8 @@ router.put("/admin/togglesong/:id",function(req,res)
     
 })
 
-
-router.post("/open/register",function(req,res) { //replacing the above route
+//register user
+router.post("/open/register",function(req,res) { 
     const { email, password } = req.body;
     if (!email || !password) {
         res.send("enter all fields");
@@ -398,7 +399,7 @@ router.post("/open/register",function(req,res) { //replacing the above route
         
     }
 }); //end of create user fcn
-
+//login use passport 
 router.post('/open/login',passport.authenticate('local',{failureRedirect: '/api/open/login/error'}),(req,res)=>{
     let payload = req.user.toJSON()
 	let token = jwt.sign(payload, secret);		// make a token
@@ -406,6 +407,7 @@ router.post('/open/login',passport.authenticate('local',{failureRedirect: '/api/
     							// send it
 	console.log('token: ' + token);
 })
+
 
 router.post('/open/adminlogin',passport.authenticate('local',{failureRedirect: '/api/open/login/error'}),(req,res)=>{
     res.send(req.user);
@@ -416,12 +418,10 @@ router.get("/open/login/error",function(req,res){
 });
   
 
-//for auth user(not admin)
+//for auth user
 passport.use(new LocalStrategy({ usernameField: 'email', passwordField: 'password' }, (email, password, done) => {
         // Match user
-        
-        
-        console.log("in passport local strategy")
+       console.log("in passport local strategy")
        User.findOne({email:email}, function(err,user){
            if(err){
             console.log("cant find user")

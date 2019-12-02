@@ -38,7 +38,7 @@ export class AuthViewComponent implements OnInit {
   
   logout()
   {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login']); //navigate back to login page if button is clicked
   }
   makeReview(){//create a review
     return this.http.makeReview(this.songId,this.rating,this.userWhoReviewed,this.comment).subscribe(data => {
@@ -107,7 +107,7 @@ export class AuthViewComponent implements OnInit {
   });
   }
   adminStuff()
-  {
+  { //login admin 
     return this.http.loginAdmin(this.email,this.password).subscribe(data => {
       //this.review = data;
       console.log(data);

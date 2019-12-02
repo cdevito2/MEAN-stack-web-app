@@ -17,41 +17,37 @@ export class AdminViewComponent implements OnInit {
   ngOnInit() {
   }
 
-  enableUserAdmin()
+  enableUserAdmin() //enable a specific user to have admin priveleges given user id
   {
     return this.http.enableUserAdmin(this.userId).subscribe(data => {
       console.log(data);
-      
-      //then add review to song, use the songId to get the song then make a put which updates the reviewID array
-      //and increments total number of reviews
-      
-    });
+      });
   }
 
-  deactivate()
+  deactivate()//deactivate user
   {
     return this.http.toggle(this.userId2,false).subscribe(data => {
       console.log(data);}); //make a input field ot something and have response say contact admin to activate
   }
-  activate()
+  activate() //activate user if they were deactivated
   {
     return this.http.toggle(this.userId2,true).subscribe(data => {
       console.log(data);});
   }
 
-  show()
+  show()//make song visible
   {
     return this.http.toggleSong(this.songId,true).subscribe(data => {
       console.log(data);});
   }
-  hide()
+  hide() //make song not visible
   {
     return this.http.toggleSong(this.songId,false).subscribe(data => {
       console.log(data);});
   }
 
 
-  updatePolicies(values)
+  updatePolicies(values) //admin functionality to create policies
   {
     var privacy = values.privacy.trim();
     var security = values.security.trim();

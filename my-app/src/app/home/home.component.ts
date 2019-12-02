@@ -20,9 +20,6 @@ export class HomeComponent implements OnInit {
   recentReview:String="";
   songIdforReview:String="";
   result:String = "";
-  x:String = "";
-  test:Object;
-  //songName:String = "";
   average:Number=0;
   keyword:String="";
   songs3:Object;
@@ -46,7 +43,7 @@ export class HomeComponent implements OnInit {
 
   getSongsList()//this returns a list of 10 songs 
   {
-    return this._http.getSongs().subscribe(data => {
+    return this._http.getSongs().subscribe(data => { //get list of 10 songs sorted by popularity
       this.songs = data; 
       for (var song in this.songs)
       {
@@ -54,9 +51,7 @@ export class HomeComponent implements OnInit {
       this.songIdforReview = this.songs[song]._id;
      
       this.getRecentReview(this.songIdforReview);
-      //var average = this.calculateAverage(this.songIdforReview);
-      //console.log("get songs avg")
-      //console.log(average)
+      
     }
   });
 }
@@ -69,7 +64,7 @@ export class HomeComponent implements OnInit {
       var totalReviews =0;
       var totalRating=0;
       console.log(data)
-      for (var review in this.reviews)
+      for (var review in this.reviews) //for each review for a songId calculate the average
       {
         totalReviews = totalReviews + 1
         console.log(totalReviews);
@@ -86,7 +81,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  getRecentReview(songId)
+  getRecentReview(songId) //gets most recent review for a specific song
   {
     return this._http.getRecentReview(songId).subscribe(data => {
       //this.reviews = data;
@@ -107,7 +102,7 @@ export class HomeComponent implements OnInit {
   }
 
 
-  updateSongAvg(avg,totalreviews,song)
+  updateSongAvg(avg,totalreviews,song) //on nginit need to update the average rating so it shows when song expanded
 {
   console.log("updating")
   return this._http.updateSongAvg(avg,totalreviews,song).subscribe(data => {

@@ -17,3 +17,9 @@ cd into my-app
 <br>
 STEP5:
 run npm start
+<br>
+STEP6:
+on browser go to localhost:4200
+<br>
+STEP6:
+use web app
